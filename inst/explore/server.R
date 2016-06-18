@@ -1,4 +1,4 @@
-library(wppExplorer)
+library(wppPlusMigExplorer)
 library(reshape2)
 library(googleVis)
 library(plyr)
@@ -6,8 +6,8 @@ library(ggplot2)
 
 shinyServer(function(input, output, session) {
 	ind.has.uncertainty <- function(ind)
-		((wppExplorer:::ind.is.low.high(ind) || wppExplorer:::ind.is.half.child(ind)) && 
-  	  					wppExplorer:::get.wpp.year()>2010)
+		((wppPlusMigExplorer:::ind.is.low.high(ind) || wppPlusMigExplorer:::ind.is.half.child(ind)) && 
+  	  					wppPlusMigExplorer:::get.wpp.year()>2010)
   	  					
   observe({
 		# disable log scale button if migration indicator (because of negatives)
@@ -21,9 +21,9 @@ shinyServer(function(input, output, session) {
 	  	selected.choices <- input$uncertainty
 	  	available.choices <- structure(as.character(1:3), names=c('80%', '95%', '+-1/2child'))
 	  	uncertainty.choices <- c()
-	  	if(wppExplorer:::ind.is.low.high(ind.num)) 
+	  	if(wppPlusMigExplorer:::ind.is.low.high(ind.num)) 
 	  		uncertainty.choices <- available.choices[1:2]
-	  	if(wppExplorer:::ind.is.half.child(ind.num))
+	  	if(wppPlusMigExplorer:::ind.is.half.child(ind.num))
 	  		uncertainty.choices <- c(uncertainty.choices, available.choices[3])
 	  	selected <- uncertainty.choices[uncertainty.choices %in% selected.choices]
 	  	updateSelectInput(session, 'uncertainty', choices=uncertainty.choices, 
@@ -38,19 +38,19 @@ shinyServer(function(input, output, session) {
   })
 
   indicatorData <- reactive({
-    wppExplorer:::lookupByIndicator(input$indicator, input$indsexmult, input$indsex, input$selagesmult, input$selages)
+    wppPlusMigExplorer:::lookupByIndicator(input$indicator, input$indsexmult, input$indsex, input$selagesmult, input$selages)
   })
   
 	indicator.fun <- reactive({
-		wppExplorer:::ind.fun(as.integer(input$indicator))
+		wppPlusMigExplorer:::ind.fun(as.integer(input$indicator))
 	})
 	
    indicatorDataLow <- reactive({
-    wppExplorer:::getUncertainty(input$indicator, input$uncertainty, 'low', input$indsexmult, input$indsex, input$selagesmult, input$selages)
+    wppPlusMigExplorer:::getUncertainty(input$indicator, input$uncertainty, 'low', input$indsexmult, input$indsex, input$selagesmult, input$selages)
   })
   
   indicatorDataHigh <- reactive({
-    wppExplorer:::getUncertainty(input$indicator, input$uncertainty, 'high', input$indsexmult, input$indsex, input$selagesmult, input$selages)
+    wppPlusMigExplorer:::getUncertainty(input$indicator, input$uncertainty, 'high', input$indsexmult, input$indsex, input$selagesmult, input$selages)
   })
   
   data <- reactive({
@@ -62,43 +62,43 @@ shinyServer(function(input, output, session) {
   })
   
   pyramid.data <- reactive({
-  	wppExplorer:::get.pyramid.data(input$year, input$seltcountries)
+  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries)
   })
   
   pyramid.data.low <- reactive({
-  	wppExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
+  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
   })
   
    pyramid.data.high <- reactive({
-  	wppExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
+  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
   })
   
   age.profile.mortM <- reactive({
-  	wppExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(M='mxM'), load.pred=FALSE)
+  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(M='mxM'), load.pred=FALSE)
   })
   
   age.profile.mortF <- reactive({
-  	wppExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(F='mxF'), load.pred=FALSE)
+  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(F='mxF'), load.pred=FALSE)
   })
   
   age.profile.popM <- reactive({
-  	wppExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(M='popM'))
+  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(M='popM'))
   })
   
   age.profile.popF <- reactive({
-  	wppExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(F='popF'))
+  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(F='popF'))
   })
   
   age.profile.fert <- reactive({
-  	wppExplorer:::get.age.profile.fert(input$year, input$seltcountries)
+  	wppPlusMigExplorer:::get.age.profile.fert(input$year, input$seltcountries)
   })
   
   age.profile.pfert <- reactive({
-  	wppExplorer:::get.age.profile.pfert(input$year, input$seltcountries)
+  	wppPlusMigExplorer:::get.age.profile.pfert(input$year, input$seltcountries)
   })
 
   
-  data.env <- function() wppExplorer:::wpp.data.env
+  data.env <- function() wppPlusMigExplorer:::wpp.data.env
     
   year.range <- reactiveValues(min=1955, max=2100)
     
@@ -122,7 +122,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$indicatorDesc <- renderText({
-  	wppExplorer:::ind.definition(as.integer(input$indicator))
+  	wppPlusMigExplorer:::ind.definition(as.integer(input$indicator))
   })
   
   output$uncertaintyNote <- renderText({
@@ -229,8 +229,8 @@ shinyServer(function(input, output, session) {
   		 if(nrow(data.l) > 0) {		
     		data.h <- wpp.by.year(indicatorDataHigh(), input$year)
     		for(i in 1:3) {
-    			colnames(data.l) <- sub(paste0('value.',i), paste('low', wppExplorer:::.get.pi.name.for.label(i)), colnames(data.l))
-    			colnames(data.h) <- sub(paste0('value.',i), paste('high', wppExplorer:::.get.pi.name.for.label(i)), colnames(data.h))
+    			colnames(data.l) <- sub(paste0('value.',i), paste('low', wppPlusMigExplorer:::.get.pi.name.for.label(i)), colnames(data.l))
+    			colnames(data.h) <- sub(paste0('value.',i), paste('high', wppPlusMigExplorer:::.get.pi.name.for.label(i)), colnames(data.h))
     		}
     		ncoldata <- ncol(data)
   			data <- merge(data, data.l, by='charcode')
@@ -282,7 +282,7 @@ shinyServer(function(input, output, session) {
   		else ages <- paste(seq(0, by=5, length=20), seq(4, by=5, length=20), sep='-')
   		ages <- c(ages, '100+')
   	}
-  	if (wppExplorer:::ind.no.age.sum(as.integer(input$indicator))) { # no multiple choices allowed
+  	if (wppPlusMigExplorer:::ind.no.age.sum(as.integer(input$indicator))) { # no multiple choices allowed
   		multiple <- FALSE
 		name <- 'selages'
 		selected<-NULL
@@ -296,7 +296,7 @@ shinyServer(function(input, output, session) {
 	
 	output$sexselection <- renderUI({
 		choices<-if(indicator.fun() %in% c('fertage', 'pfertage')) c(Female="F") else c(Female="F", Male="M")
-		if(wppExplorer:::ind.no.age.sum(as.integer(input$indicator))){
+		if(wppPlusMigExplorer:::ind.no.age.sum(as.integer(input$indicator))){
   			multiple <- FALSE
   			selected <- NULL
   			name <- 'indsex'
@@ -370,7 +370,7 @@ shinyServer(function(input, output, session) {
   output$trends <- reactive({
 	data <- get.trends()
 	if(is.null(data)) return(data)
-    list(data = wppExplorer:::preserveStructure(data$casted),
+    list(data = wppPlusMigExplorer:::preserveStructure(data$casted),
          options = list(
            hAxis = list(viewWindowMode = 'explicit', viewWindow = list(
              min = data$hrange[1], max = data$hrange[2]
@@ -408,7 +408,7 @@ shinyServer(function(input, output, session) {
 	}
 	if(is.null(data)) return(NULL)
 	data <- cast.profile.data(data)
-    list(data = wppExplorer:::preserveStructure(data$casted),
+    list(data = wppPlusMigExplorer:::preserveStructure(data$casted),
          options = list(
            hAxis = list(slantedText=fun!='mortagesex',
            				viewWindowMode = 'explicit', viewWindow = list(
@@ -473,7 +473,7 @@ shinyServer(function(input, output, session) {
   			g <- g + geom_ribbon(aes_string(ymin=colnames(data)[idx][1], ymax=colnames(data)[idx][2], 
   											fill="charcode", colour="charcode", linetype=NA), alpha=c(0.3, 0.2, 0.1)[i])
   			if(!is.null(line.data)) colnames(line.data) <- c('charcode', 'Year', 'low', 'high', 'variant')
-  			line.data <- rbind(line.data, setNames(cbind(data[,c(1,2,idx)], wppExplorer:::.get.pi.name.for.label(i)), colnames(line.data)))
+  			line.data <- rbind(line.data, setNames(cbind(data[,c(1,2,idx)], wppPlusMigExplorer:::.get.pi.name.for.label(i)), colnames(line.data)))
   			tmp1 <- tmp2 <- data
   			tmp1[,'value'] <- data[,colnames(data)[idx][1]]
   			tmp2[,'value'] <- data[,colnames(data)[idx][2]]
@@ -516,7 +516,7 @@ shinyServer(function(input, output, session) {
   	TRUE
   }
   .get.prop.data <- function(data, tpop) {
-	tpop <- wppExplorer::wpp.by.countries(wppExplorer::wpp.by.year(tpop, input$year), input$seltcountries)
+	tpop <- wppPlusMigExplorer::wpp.by.countries(wppPlusMigExplorer::wpp.by.year(tpop, input$year), input$seltcountries)
   	colnames(tpop)[2] <- 'tpop' 
   	data <- merge(data, tpop, by='charcode')  		
   	data <- ddply(data, 'charcode', mutate, value = value/tpop)
@@ -529,7 +529,7 @@ shinyServer(function(input, output, session) {
   	proportion <- input$proppyramids
   	data <- pyramid.data()
   	if(proportion) {
-  		tpop <- wppExplorer::wpp.indicator('tpop')
+  		tpop <- wppPlusMigExplorer::wpp.indicator('tpop')
   		data <- .get.prop.data(data, tpop)
   	}
 	low <- pyramid.data.low()
@@ -537,13 +537,13 @@ shinyServer(function(input, output, session) {
   		high <- pyramid.data.high()
   		if(proportion) {
 			#browser()
-			which.pi <- wppExplorer:::.get.pi.name(as.integer(input$uncertainty))
+			which.pi <- wppPlusMigExplorer:::.get.pi.name(as.integer(input$uncertainty))
 			which.pi <- if('half.child' %in% which.pi) 'half.child' else NULL # currently only half child for pyramid available
 			if(!is.null(which.pi)) {
-  				tpop <- wppExplorer::wpp.indicator('tpop.ci', which.pi=which.pi, bound='low')
+  				tpop <- wppPlusMigExplorer::wpp.indicator('tpop.ci', which.pi=which.pi, bound='low')
   				low <- .get.prop.data(low, tpop)
   				lowval <- low$value
-  				tpop <- wppExplorer::wpp.indicator('tpop.ci', which.pi=which.pi, bound='high')
+  				tpop <- wppPlusMigExplorer::wpp.indicator('tpop.ci', which.pi=which.pi, bound='high')
   				high <- .get.prop.data(high, tpop)
   				low$value <- pmin(low$value, high$value, na.rm=TRUE)
   				high$value <- pmax(high$value, lowval, na.rm=TRUE)
@@ -571,7 +571,7 @@ shinyServer(function(input, output, session) {
   	if(is.element('low', colnames(data))) {
   		g <- g + geom_ribbon(data=subset(data, sex=='F'), aes(ymin=low, ymax=high, linetype=NA), alpha=0.3)
   		g <- g + geom_ribbon(data=subset(data, sex=='M'), aes(ymin=high, ymax=low, linetype=NA), alpha=0.3)
-  		line.data <- cbind(data, variant=wppExplorer:::.get.pi.name.for.label(3)) # only half-child variant available 
+  		line.data <- cbind(data, variant=wppPlusMigExplorer:::.get.pi.name.for.label(3)) # only half-child variant available 
   		g <- g + geom_line(data=subset(line.data, sex=='F'), aes(y=low, linetype=variant, colour=charcode, group=charcode)) # female low
   		g <- g + geom_line(data=subset(line.data, sex=='F'), aes(y=high, linetype=variant, colour=charcode, group=charcode)) # female high
   		g <- g + geom_line(data=subset(line.data, sex=='M'), aes(y=low, linetype=variant, colour=charcode, group=charcode)) # male low
@@ -626,8 +626,8 @@ shinyServer(function(input, output, session) {
 	})
   
   # .get.digits <- reactive({
-  	# print(wppExplorer:::ind.digits(as.integer(input$indicator)))
-  	# wppExplorer:::ind.digits(as.integer(input$indicator))
+  	# print(wppPlusMigExplorer:::ind.digits(as.integer(input$indicator)))
+  	# wppPlusMigExplorer:::ind.digits(as.integer(input$indicator))
   # })
   
   # format_num <- function(col, digits) {
@@ -641,14 +641,14 @@ shinyServer(function(input, output, session) {
 	if(is.null(data)) return(data)
 	df <- as.data.frame(data$casted[,-1])
 	if(ncol(df) > 1) {
-		if(wppExplorer:::ind.sum.in.table(as.integer(input$indicator))) {
+		if(wppPlusMigExplorer:::ind.sum.in.table(as.integer(input$indicator))) {
 			df <- cbind(df, rowSums(df))
 			colnames(df)[ncol(df)] <- 'Sum'
 		}
 	} else colnames(df) <- input$seltcountries # one country selected
 	
 	df <- t(df)
-	#df <- t(as.data.frame(lapply(df, format_num, digits=wppExplorer:::ind.digits(as.integer(input$indicator)))))
+	#df <- t(as.data.frame(lapply(df, format_num, digits=wppPlusMigExplorer:::ind.digits(as.integer(input$indicator)))))
 	# df <- t(data$casted[,-1]) # remove year column
 	#browser()
 	colnames(df) <- as.integer(data$casted[,'Year'])
@@ -656,14 +656,14 @@ shinyServer(function(input, output, session) {
 	}, include.rownames = TRUE)
 
   output$trendstabletitle <- renderText({
- 	wppExplorer:::get.indicator.title(input$indicator, input$indsexmult, input$indsex, input$selagesmult, input$selages) 	
+ 	wppPlusMigExplorer:::get.indicator.title(input$indicator, input$indsexmult, input$indsex, input$selagesmult, input$selages) 	
    })
    
    all.data <- reactive({
-   		if(is.null(wppExplorer:::wpp.data.env$mchart.data)) {
+   		if(is.null(wppPlusMigExplorer:::wpp.data.env$mchart.data)) {
    			inds <- unique(c(input$indicator, 1,2,0,4))[1:4]
    		} else inds <- input$indicator
-		wppExplorer:::lookupByIndicator.mchart(inds, input$indsexmult, input$indsex, input$selagesmult, input$selages)
+		wppPlusMigExplorer:::lookupByIndicator.mchart(inds, input$indsexmult, input$indsex, input$selagesmult, input$selages)
 	})
 	
   output$graphgvis <- renderGvis({

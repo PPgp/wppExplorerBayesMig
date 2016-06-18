@@ -3,15 +3,15 @@ utils::globalVariables("wpp.data.env")
 wpp.explore <- function(wpp.year=2015, host=NULL, package.suffix="plusMig", ...) {
 	if(!is.null(wpp.year)) set.wpp.year(wpp.year, package.suffix)
 	if(missing(host)) host <- getOption("shiny.host", "0.0.0.0")
-	shiny::runApp(system.file('explore', package='wppExplorer'), host = host, ...)
+	shiny::runApp(system.file('explore', package='wppPlusMigExplorer'), host = host, ...)
 }
 
-wpp.explore3d <- function(wpp.year=NULL) {
-	if(!is.null(wpp.year)) set.wpp.year(wpp.year)
-	shiny::runApp(system.file('bubbles', package='wppExplorer'))
+wpp.explore3d <- function(wpp.year=2015, package.suffix="plusMig") {
+	if(!is.null(wpp.year)) set.wpp.year(wpp.year, package.suffix)
+	shiny::runApp(system.file('bubbles', package='wppPlusMigExplorer'))
 }
 
-get.available.wpps <- function() c(2008, 2010, 2012, 2015)
+get.available.wpps <- function() c(2015)
 check.wpp.revision <- function(wpp.year) {
 	if (!wpp.year %in% get.available.wpps())
 		stop('wpp.year must be one of ', paste(get.available.wpps(), collapse=', '))

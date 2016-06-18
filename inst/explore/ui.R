@@ -28,7 +28,7 @@ col <- function(width, ...) {
 
  
 shinyUI(pageWithSidebar(
-  headerPanel(paste("WPP", wppExplorer:::get.wpp.year(), "plus Migration Explorer")),
+  headerPanel(paste("WPP", wppPlusMigExplorer:::get.wpp.year(), "plus Migration Explorer")),
   sidebarPanel(
     shinyjs::useShinyjs(),
     geochartPrereqs,
@@ -39,8 +39,8 @@ shinyUI(pageWithSidebar(
 	),
     uiOutput('yearUI'),
     hr(),
-    selectInput('indicator', h5('Indicator:'), wppExplorer:::wpp.data.env$indicators),
-    conditionalPanel(condition=paste("input.indicator >", sum(attr(wppExplorer:::wpp.data.env$indicators, "settings")$by.age == FALSE)),
+    selectInput('indicator', h5('Indicator:'), wppPlusMigExplorer:::wpp.data.env$indicators),
+    conditionalPanel(condition=paste("input.indicator >", sum(attr(wppPlusMigExplorer:::wpp.data.env$indicators, "settings")$by.age == FALSE)),
     	tags$head(tags$style(type="text/css", "#selagesmult { height: 150px; width: 70px}"),
     			  tags$style(type="text/css", "#selages { height:25px; width: 70px}"),
     			  tags$style(type="text/css", "#indsexmult { height: 50px; width: 90px}"),
