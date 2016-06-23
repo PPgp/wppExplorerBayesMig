@@ -103,12 +103,18 @@ mig <- function(...) {
 }
 
 migrate <- function(...) {
-	migcounts <- mig()
-	pop <- tpop()
-	mergepop <- merge(migcounts[,'country_code', drop=FALSE], pop, sort=FALSE)
+	# observed
+	#browser()
+	if.not.exists.load('migration')
+	if.not.exists.load('pop')
+	migcounts <- wpp.data.env$migration
+	mergepop <- merge(migcounts[,'country_code', drop=FALSE], wpp.data.env$pop, sort=FALSE)
 	ncols <- ncol(mergepop)
 	#browser()
-	cbind(country_code=mergepop$country_code, (migcounts[,2:ncol(migcounts)]*200.)/((mergepop[,3:ncols]+mergepop[,2:(ncols-1)])/2.))
+	rate.obs <- cbind(country_code=mergepop$country_code, (migcounts[,2:ncol(migcounts)]*200.)/((mergepop[,3:ncols]+mergepop[,2:(ncols-1)])/2.))
+	if(length(wpp.data.env$package)==1) return(rate.obs)
+	if.not.exists.load('mrateproj')
+	merge(rate.obs, wpp.data.env$mrateproj, by='country_code')
 }
 	
 popagesex <- function(sexm, agem, ...){
@@ -264,9 +270,11 @@ tpop.ci <- function(which.pi, bound, ...) {
 
 popagesex.ci <- function(which.pi, bound, sexm, agem, ...) {
 	# bound is 'low' or 'high'
-	if((wpp.year.from.package.name(wpp.data.env$package[1]) <= 2010) || (length(sexm) > 1) || (length(agem) > 1) || (which.pi != 'half.child')) 
+	if((wpp.year.from.package.name(wpp.data.env$package[1]) <= 2010) || (length(sexm) > 1) || (length(agem) > 1)) 
 		return(NULL)
-	dataset.name <- paste('pop', sexm, 'proj', capitalize(bound), sep='')
+	dataset.name <- paste0('pop', sexm, 'proj')
+	dataset.name <- if(which.pi == 'half.child') paste0(dataset.name, capitalize(bound))
+					else paste0(dataset.name, which.pi, .pi.suffix(bound))
 	if.not.exists.load(dataset.name)
 	sum.by.country.subset.age(wpp.data.env[[dataset.name]], agem)
 }
@@ -274,6 +282,11 @@ popagesex.ci <- function(which.pi, bound, sexm, agem, ...) {
 mig.ci <- function(which.pi, bound, ...) {
 	if(which.pi == 'half.child') return(NULL)
 	load.and.merge.datasets(paste0('migproj', which.pi, .pi.suffix(bound)), NULL)
+}
+
+migrate.ci <- function(which.pi, bound, ...) {
+	if(which.pi == 'half.child') return(NULL)
+	load.and.merge.datasets(paste0('mrateproj', which.pi, .pi.suffix(bound)), NULL)
 }
 
 load.dataset.and.sum.by.country<-function(dataset){
@@ -284,6 +297,7 @@ load.dataset.and.sum.by.country<-function(dataset){
 trim.spaces <- function (x) gsub("^\\s+|\\s+$", "", x)
 
 if.not.exists.load <- function(name) {
+	#if(name=="pop") browser()
 	if(exists(name, where=wpp.data.env, inherits=FALSE)) return()
 	do.call('data', list(name, package=wpp.data.env$package, envir=wpp.data.env))
 	# special handling of the age column (mostly because of inconsistent labels in the various datasets)
