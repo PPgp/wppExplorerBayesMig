@@ -3,6 +3,7 @@ library(reshape2)
 library(googleVis)
 library(plyr)
 library(ggplot2)
+library(bayesPop)
 
 shinyServer(function(input, output, session) {
 	ind.has.uncertainty <- function(ind)
@@ -704,4 +705,10 @@ shinyServer(function(input, output, session) {
                       options=list(width=700, height=600))
   })
   output$AddIndicatorText <- renderText({"\nAdd indicator from the left panel\nto chart axes:"})
+  output$probcalc_result <- renderText({
+  		input$probcalculate
+  		#paste("Env:", paste(ls(data.env()), collapse=', '))
+  		pred <- get.pop.prediction(data.env()$sim.dir)
+  		paste("Nr trajectories:", pred$nr.traj, ", input: ", input$probcalc_threshold)
+  	})
 })

@@ -89,7 +89,7 @@ width=3
 		hr(),
       	DT::dataTableOutput('stable')
       ),
-      tabPanel('Trends, Age profiles & Pyramids',
+      tabPanel('Trends & Pyramids',
   		tags$head(
 			tags$style(type="text/css", "#seltcountries { height: 450px; width: 150px}")
 			),
@@ -125,7 +125,7 @@ width=3
 				  						checkboxInput('proppyramids', 'Pyramid of proportions', FALSE),
 				  						textOutput("pyramid_selected")
 									)
-				  				)	  			
+				  				)
 				  			)
 				  		)
  					),
@@ -146,6 +146,13 @@ width=3
       	#plotOutput('hist')
       	htmlOutput('ghist')
     ),
+	tabPanel('Probability Calculator',
+		flowLayout(
+			textInput("probcalc_threshold", "Threshold:"),
+			submitButton('Calculate Probability'),	 	
+			textOutput("probcalc_result")
+		)			
+	),   
       tabPanel('Rosling Chart',
 		htmlOutput('graphgvis'),
 		row(col(1, "")),

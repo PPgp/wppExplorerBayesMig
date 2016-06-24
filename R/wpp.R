@@ -48,7 +48,7 @@ set.wpp.year <- function(wpp.year, package.suffix="") {
 	check.wpp.revision(wpp.year)
 	# cleanup the environment
 	for (item in ls(wpp.data.env)) {
-		if(!(item %in% c('indicators'))) rm(list=item, envir=wpp.data.env)
+		if(!(item %in% c('indicators', 'sim.dir'))) rm(list=item, envir=wpp.data.env)
 	}
 	data('iso3166', envir=wpp.data.env)
 	wpp.data.env$package <- paste0('wpp', wpp.year)

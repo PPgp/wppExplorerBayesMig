@@ -56,3 +56,5 @@ wpp.data.env$package <- "wpp2015"
 # Filter out non-used countries
 do.call('data', list("popM", package=wpp.data.env$package, envir=wpp.data.env))
 wpp.data.env$iso3166 <- wpp.data.env$iso3166[is.element(wpp.data.env$iso3166$uncode, wpp.data.env$popM$country_code),]
+wpp.data.env$sim.dir <- '/Users/hana/bayespop/R/Pop/wpp2015/sim07292015'
+
