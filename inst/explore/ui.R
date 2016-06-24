@@ -146,12 +146,23 @@ width=3
       	#plotOutput('hist')
       	htmlOutput('ghist')
     ),
-	tabPanel('Probability Calculator',
-		flowLayout(
-			textInput("probcalc_threshold", "Threshold:"),
-			submitButton('Calculate Probability'),	 	
-			textOutput("probcalc_result")
-		)			
+	tabPanel('Probability Calc',
+		tags$head(
+			tags$style(type="text/css", "#seltcountries { height: 450px; width: 150px}")
+			),
+		tags$div(
+			class = "container",
+			row(
+				col(0.5, ''),
+				col(2, uiOutput('cselection_single')),
+				col(7, flowLayout(
+					textInput("probcalc_threshold", "Threshold:"),
+					submitButton('Calculate Probability'),	 	
+					textOutput("probcalc_result")
+					)
+				)
+			)
+		)	
 	),   
       tabPanel('Rosling Chart',
 		htmlOutput('graphgvis'),

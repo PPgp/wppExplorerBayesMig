@@ -330,6 +330,20 @@ shinyServer(function(input, output, session) {
   					))
 	})
 	
+  output$cselection_single <- renderUI({
+  	# single choice country selection
+  	o <- order(data.env()$iso3166[,'name'])
+  	codes <- as.character(data.env()$iso3166[o,'charcode'])
+  	names <- paste(codes, data.env()$iso3166[o,'name'])
+  	countries <- structure(
+  		codes,
+  		names = names
+  	)
+  	do.call('selectInput', list('seltcountry', 'Select country/area:', countries, multiple=FALSE, selectize = FALSE,
+  					selected=countries[1] 
+  					))
+	})
+	
   cast.profile.data <- function(data) {
     vrange <- range(data$value, na.rm=TRUE)
     hrange <- if(is.element('15-19', data$age)) c(0, length(unique(data$age))) else range(data$age)
@@ -706,9 +720,10 @@ shinyServer(function(input, output, session) {
   })
   output$AddIndicatorText <- renderText({"\nAdd indicator from the left panel\nto chart axes:"})
   output$probcalc_result <- renderText({
-  		input$probcalculate
-  		#paste("Env:", paste(ls(data.env()), collapse=', '))
+  		if(is.null(input$seltcountry)) return(NULL)
+  		#input$probcalculate
+  		
   		pred <- get.pop.prediction(data.env()$sim.dir)
-  		paste("Nr trajectories:", pred$nr.traj, ", input: ", input$probcalc_threshold)
+  		paste("Country:", input$seltcountry, "Nr trajectories:", pred$nr.traj, ", input: ", input$probcalc_threshold)
   	})
 })
