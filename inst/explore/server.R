@@ -65,12 +65,20 @@ shinyServer(function(input, output, session) {
   	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries)
   })
   
-  pyramid.data.low <- reactive({
-  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
+  # pyramid.data.low <- reactive({
+  	# wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
+  # })
+  
+   # pyramid.data.high <- reactive({
+  	# wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
+  # })
+  
+   pyramid.data.low <- reactive({
+  	wppPlusMigExplorer:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
   })
   
    pyramid.data.high <- reactive({
-  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
+  	wppPlusMigExplorer:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
   })
   
   age.profile.mortM <- reactive({
@@ -550,8 +558,9 @@ shinyServer(function(input, output, session) {
   			} else low <- NULL
   		}
   		if(!is.null(low)) {
+  			colnames(low) <- sub('value', 'low', colnames(low))
+  			colnames(high) <- sub('value', 'high', colnames(high))
   			low.high <- merge(low, high, by=c('charcode', 'age', 'age.num', 'sex'), sort=FALSE)
-  			colnames(low.high)[5:6] <- c('low', 'high')
   			data <- merge(data, low.high, all=TRUE, sort=FALSE)
   		}
 	}
@@ -568,20 +577,34 @@ shinyServer(function(input, output, session) {
   	g <- g + geom_text(data=NULL, y=-data.range[2]/2, x=20, label="Male", colour='black')
   	g <- g + geom_text(data=NULL, y=data.range[2]/2, x=20, label="Female", colour='black')
   	g <- g + geom_hline(yintercept = 0)
-  	if(is.element('low', colnames(data))) {
-  		g <- g + geom_ribbon(data=subset(data, sex=='F'), aes(ymin=low, ymax=high, linetype=NA), alpha=0.3)
-  		g <- g + geom_ribbon(data=subset(data, sex=='M'), aes(ymin=high, ymax=low, linetype=NA), alpha=0.3)
-  		line.data <- cbind(data, variant=wppPlusMigExplorer:::.get.pi.name.for.label(3)) # only half-child variant available 
-  		g <- g + geom_line(data=subset(line.data, sex=='F'), aes(y=low, linetype=variant, colour=charcode, group=charcode)) # female low
-  		g <- g + geom_line(data=subset(line.data, sex=='F'), aes(y=high, linetype=variant, colour=charcode, group=charcode)) # female high
-  		g <- g + geom_line(data=subset(line.data, sex=='M'), aes(y=low, linetype=variant, colour=charcode, group=charcode)) # male low
-  		g <- g + geom_line(data=subset(line.data, sex=='M'), aes(y=high, linetype=variant, colour=charcode, group=charcode)) # male high
-        g <- g + scale_linetype_manual(values=c("80%"=2, '1/2child'=4, "95%"=3), na.value=0)
-        tmp1 <- tmp2 <- data
-		tmp1[,'value'] <- data[,'low']
-  		tmp2[,'value'] <- data[,'high']
-  		isolate(ggplot.data$pyramid <- rbind(ggplot.data$pyramid, tmp1, tmp2))
-  	}
+  	if('low' %in% substr(colnames(data),1,3)) {
+  		#line.data <- NULL
+  		for(i in 3:1) {
+  			idx <- grep(paste0('\\.',i), colnames(data))
+  			if(length(idx)==0) next
+  			g <- g + geom_ribbon(data=subset(data, sex=='F'), aes_string(ymin=colnames(data)[idx][1], ymax=colnames(data)[idx][2], 
+  											fill="charcode", colour="charcode", linetype=NA), alpha=c(0.3, 0.2, 0.1)[i])
+  			g <- g + geom_ribbon(data=subset(data, sex=='M'), aes_string(ymin=colnames(data)[idx][2], ymax=colnames(data)[idx][1], 
+  											fill="charcode", colour="charcode", linetype=NA), alpha=c(0.3, 0.2, 0.1)[i])
+  			#line.data <- rbind(line.data, setNames(cbind(data[,c(1:4,idx)], 
+  			#											variant=wppPlusMigExplorer:::.get.pi.name.for.label(i)), 
+  			#										c(colnames(data)[1:4], 'low', 'high', 'variant')))
+  			tmp1 <- tmp2 <- data
+			tmp1[,'value'] <- data[,colnames(data)[idx][1]]
+  			tmp2[,'value'] <- data[,colnames(data)[idx][2]]
+  			isolate(ggplot.data$pyramid <- rbind(ggplot.data$pyramid, tmp1, tmp2))
+  		}
+  		#browser()
+  		#colnames(line.data) <- c(colnames(data)[1:4], 'low', 'high', 'variant') 
+  		# g <- g + geom_line(data=subset(line.data, sex=='F'), aes(y=low, linetype=variant, colour=charcode, group=charcode)) # female low
+  		# g <- g + geom_line(data=subset(line.data, sex=='F'), aes(y=high, linetype=variant, colour=charcode, group=charcode)) # female high
+  		# g <- g + geom_line(data=subset(line.data, sex=='M'), aes(y=low, linetype=variant, colour=charcode, group=charcode)) # male low
+  		# g <- g + geom_line(data=subset(line.data, sex=='M'), aes(y=high, linetype=variant, colour=charcode, group=charcode)) # male high
+  		#g <- geom_point(aes(shape = NA), colour = "black", alpha=0.3)
+
+		#g <- g + scale_fill_manual(name = '',  labels=c("80%", "95%", '1/2child'), values=c(alpha("black", 0.3), alpha("black", 0.1), alpha("black", 0.1)))
+        #g <- g + scale_linetype_manual(values=c("80%"=2, '1/2child'=4, "95%"=3), na.value=0)
+       }
   	g
   }
   
@@ -592,7 +615,7 @@ shinyServer(function(input, output, session) {
 	#data <- .get.pyramid.data(proportion=input$proppyramids)
 	data <- .get.pyramid.data()
 	male.idx <- which(data$sex=='M')
-	for(col in c('value', 'low', 'high'))
+	for(col in c('value', grep('low|high', colnames(data), value=TRUE)))
 		if(!is.null(data[[col]])) data[[col]][male.idx] <- -data[[col]][male.idx]
 	if(!is.null(pyramid.ranges$age)) {
 		#print(input$pyramid_zoom)
