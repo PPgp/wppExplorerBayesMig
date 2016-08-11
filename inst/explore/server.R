@@ -339,7 +339,7 @@ shinyServer(function(input, output, session) {
   		codes,
   		names = names
   	)
-  	do.call('selectInput', list('seltcountry', 'Select country/area:', countries, multiple=FALSE, selectize = FALSE,
+  	do.call('selectInput', list('seltcountry', 'Select country:', countries, multiple=FALSE, selectize = FALSE,
   					selected=countries[1] 
   					))
 	})
@@ -719,11 +719,42 @@ shinyServer(function(input, output, session) {
                       options=list(width=700, height=600))
   })
   output$AddIndicatorText <- renderText({"\nAdd indicator from the left panel\nto chart axes:"})
-  output$probcalc_result <- renderText({
-  		if(is.null(input$seltcountry)) return(NULL)
-  		#input$probcalculate
+  # output$probcalc_result <- renderText({
+  		# if(is.null(input$seltcountry)) return(NULL)
+  		# input$probcalculate
   		
-  		pred <- get.pop.prediction(data.env()$sim.dir)
-  		paste("Country:", input$seltcountry, "Nr trajectories:", pred$nr.traj, ", input: ", input$probcalc_threshold)
+  		# pred <- get.pop.prediction(data.env()$sim.dir)
+  		# paste("Country:", input$seltcountry, "Nr trajectories:", pred$nr.traj, ", input: ", input$probcalc_threshold)
+  	# })
+  observeEvent(input$probcalculate, {
+  	cidx <- which(data.env()$iso3166$charcode==input$seltcountry)
+  	country.code <- as.integer(data.env()$iso3166[cidx,'uncode'])
+  	direction <- isolate(input$probcalc_direction)
+  	threshold <-  isolate(as.integer(input$probcalc_threshold))
+  	output$probcalctabletitle <- renderText({
+  		paste("Probability that population of", data.env()$iso3166[cidx,'name'], "will be", 
+  			if(direction == 1) "larger" else "smaller", "than", threshold, "thousands", getwd())})
+  	output$probcalc_result <- renderTable({
+  		probability.calc(country.code, direction, threshold)
+  		#paste("Country:", input$seltcountry, "Nr trajectories:", pred$nr.traj, ", input: ", input$probcalc_threshold)
+  		})
   	})
+  	
+  	probability.calc <- function(country, direction, threshold) {
+  		pred <- get.pop.prediction(data.env()$sim.dir)
+  		country.object <- get.country.object(country, country.table=pred$countries)
+		years <- seq(2020, 2100, by=5)
+		probs <- c()
+		all.trajs <- pop.trajectories(pred, country.object$code)		
+		for(year in years) {
+        	year.idx <- which(pred$proj.years.pop == year)
+        	traj <- all.trajs[year.idx,]
+        	probs <- c(probs, (if(direction == 1) sum(traj >= threshold) else sum(traj <= threshold))/length(traj))
+		}
+		probs <- round(probs * 100, 1)
+		names(probs) <- years
+		as.data.frame(t(probs))
+	}
+
+
 })

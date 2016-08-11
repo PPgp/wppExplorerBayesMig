@@ -148,19 +148,40 @@ width=3
     ),
 	tabPanel('Probability Calc',
 		tags$head(
-			tags$style(type="text/css", "#seltcountries { height: 450px; width: 150px}")
+			tags$style(HTML('#probcalculate{background-color:lightblue}'))
 			),
 		tags$div(
 			class = "container",
 			row(
 				col(0.5, ''),
-				col(2, uiOutput('cselection_single')),
-				col(7, flowLayout(
-					textInput("probcalc_threshold", "Threshold:"),
-					submitButton('Calculate Probability'),	 	
-					textOutput("probcalc_result")
-					)
-				)
+				col(10, HTML("<h4><font color='#d95f0e'><b>Probability that population in the selected country will be larger/smaller than the threshold:</b></font></h4>"))
+			),
+			row(
+				col(0.5, ''),
+				col(10, HTML("<p></p>"))
+			),
+			row(
+				col(0.5, ''),
+				col(3, uiOutput('cselection_single')),
+				col(3, textInput("probcalc_threshold", "Threshold (in thousands):")),
+				col(3, radioButtons("probcalc_direction", label="", choices=list(larger=1, smaller=0), selected = 1, inline = TRUE))				
+				),
+			row(
+				col(0.5, ''),
+				col(3, actionButton('probcalculate', 'Calculate Probability'))
+				),
+			row(
+				col(0.5, ''),
+				col(10, HTML("<p></p><p></p>"))
+			),
+			row(
+				col(0.5, ''),
+				col(9, HTML("<h5><font color='#d95f0e'><b>Results:</b></font></h5>"),
+					textOutput('probcalctabletitle'))
+			),
+			row(
+				col(0.5, ''),
+				col(10, tableOutput("probcalc_result"))
 			)
 		)	
 	),   

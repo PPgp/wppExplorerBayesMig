@@ -1,7 +1,7 @@
 utils::globalVariables("wpp.data.env")
 
-wpp.explore <- function(wpp.year=2015, host=NULL, package.suffix="plusMig", ...) {
-	if(!is.null(wpp.year)) set.wpp.year(wpp.year, package.suffix)
+wpp.explore <- function(wpp.year=2015, host=NULL, package.suffix="plusMig", sim.dir=NULL, ...) {
+	if(!is.null(wpp.year)) set.wpp.year(wpp.year, package.suffix, sim.dir)
 	if(missing(host)) host <- getOption("shiny.host", "0.0.0.0")
 	shiny::runApp(system.file('explore', package='wppPlusMigExplorer'), host = host, ...)
 }
@@ -44,7 +44,7 @@ wpp.by.countries <- function(data, countries) {
   data
 }
 
-set.wpp.year <- function(wpp.year, package.suffix="") {
+set.wpp.year <- function(wpp.year, package.suffix="", sim.dir=NULL) {
 	check.wpp.revision(wpp.year)
 	# cleanup the environment
 	for (item in ls(wpp.data.env)) {
@@ -56,6 +56,7 @@ set.wpp.year <- function(wpp.year, package.suffix="") {
 	# Filter out non-used countries
 	do.call('data', list("popM", package=wpp.data.env$package, envir=wpp.data.env))
 	wpp.data.env$iso3166 <- wpp.data.env$iso3166[is.element(wpp.data.env$iso3166$uncode, wpp.data.env$popM$country_code),]
+	if(!is.null(sim.dir)) wpp.data.env$sim.dir <- sim.dir
 	cat('\nDefault WPP package set to', wpp.data.env$package,'.\n')
 }
 
