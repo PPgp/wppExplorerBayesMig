@@ -50,9 +50,10 @@ set.wpp.year <- function(wpp.year, package.suffix="", sim.dir=NULL) {
 	for (item in ls(wpp.data.env)) {
 		if(!(item %in% c('indicators', 'sim.dir'))) rm(list=item, envir=wpp.data.env)
 	}
-	data('iso3166', envir=wpp.data.env)
 	wpp.data.env$package <- paste0('wpp', wpp.year)
-	if(package.suffix != "") wpp.data.env$package <- c(paste0('wpp', wpp.year, package.suffix), wpp.data.env$package)
+        if(package.suffix != "") 
+	    wpp.data.env$package <- c(paste0('wpp', wpp.year, package.suffix), wpp.data.env$package)
+	data('iso3166', envir=wpp.data.env, package="wppPlusMigExplorer")
 	# Filter out non-used countries
 	do.call('data', list("popM", package=wpp.data.env$package, envir=wpp.data.env))
 	wpp.data.env$iso3166 <- wpp.data.env$iso3166[is.element(wpp.data.env$iso3166$uncode, wpp.data.env$popM$country_code),]

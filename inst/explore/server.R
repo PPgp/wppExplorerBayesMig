@@ -657,7 +657,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$pyramid_selected <- renderText({
-  	if(is.null(input$pyramid_values)) return(" ")
+  	if(length(input$pyramid_values)==0) return(" ")
   	selected <- nearPoints(ggplot.data$pyramid, input$pyramid_values, xvar='value', yvar='age.num', maxpoints = 1, threshold=10)
 	if(nrow(selected) == 0) return(" ")
 	paste0(if(selected$value < 0) "Male " else "Female ", selected$age, ', Value = ', round(abs(selected$value),3), ", Country: ", selected$name)
@@ -732,12 +732,12 @@ shinyServer(function(input, output, session) {
   	direction <- isolate(input$probcalc_direction)
   	threshold <-  isolate(as.integer(input$probcalc_threshold))
   	output$probcalctabletitle <- renderText({
-  		paste("Probability that population of", data.env()$iso3166[cidx,'name'], "will be", 
-  			if(direction == 1) "larger" else "smaller", "than", threshold, "thousands", getwd())})
+  		paste("Probability (in %) that population of", data.env()$iso3166[cidx,'name'], "will be", 
+  			if(direction == 1) "larger" else "smaller", "than", threshold, "thousands")})
   	output$probcalc_result <- renderTable({
   		probability.calc(country.code, direction, threshold)
   		#paste("Country:", input$seltcountry, "Nr trajectories:", pred$nr.traj, ", input: ", input$probcalc_threshold)
-  		})
+  		}, include.rownames=FALSE)
   	})
   	
   	probability.calc <- function(country, direction, threshold) {
@@ -755,6 +755,4 @@ shinyServer(function(input, output, session) {
 		names(probs) <- years
 		as.data.frame(t(probs))
 	}
-
-
 })
