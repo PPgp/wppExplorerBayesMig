@@ -1,4 +1,4 @@
 library(testthat)
-library(wppExplorer)
+library(wppPlusMigExplorer)
 
-test_check("wppExplorer")
+test_check("wppPlusMigExplorer")

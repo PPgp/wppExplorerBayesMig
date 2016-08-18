@@ -23,13 +23,6 @@ test_that('age-specific fertility rate has the right value', {
 })
 
 
-test_that('mean age of women in childbearing age is put into the right format', {
-	set.year(2012)	
-	data <- wpp.by.country(wpp.indicator('meanageinchbearage'), 'US')
-	expect_true(all(dim(data) == c(31, 2))) # 1 country for all years
-	expect_true(setequal(data$Year, seq(1950, 2100, by=5)))
-})
-
 test_that('mortality values for high ages come out correctly', {
 	set.year(2015)
 	mx <- wpp.by.year(wpp.by.country(wpp.indicator('mortagesex', sex="M", age="100+"), 'FR'), 2015)$value
@@ -43,10 +36,10 @@ test_that('mortality values for high ages come out correctly', {
 })
 
 test_that('migration rate has the right value', {
-	ind <- wpp.by.year(wpp.by.country(wpp.indicator('migrate'), 'AE'), 2025)$value
-	data(popproj, package="wpp2015")
-	data(migration, package="wpp2015")
-	popUA <- sum(subset(popproj, country_code==784)[c("2020", "2025")])/2
-	migUA <- subset(migration, country_code == 784)["2020-2025"]
+	ind <- wpp.by.year(wpp.by.country(wpp.indicator('migrate'), 'AE'), 2005)$value
+	data(pop, package="wpp2015plusMig")
+	data(migration, package="wpp2015plusMig")
+	popUA <- sum(subset(pop, country_code==784)[c("2000", "2005")])/2
+	migUA <- subset(migration, country_code == 784)["2000-2005"]
 	expect_true(ind == migUA*200/popUA)
 })

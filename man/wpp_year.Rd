@@ -9,25 +9,25 @@ Edit/Retrieve WPP Year.
 Change/get the WPP year which determines from which \pkg{wpp} package data are retrieved.
 }
 \usage{
-set.wpp.year(wpp.year)
+set.wpp.year(wpp.year, sim.dir = NULL)
 
 get.wpp.year()
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{wpp.year}{Possible values are 2015 (default) 2012, and 2010.}
+  \item{wpp.year}{Currently only 2015 is available.}
+  \item{sim.dir}{Simulation directory used for probability calculations.}
 }
-
+\details{
+	The package operates on the \pkg{wpp2015PlusMig} data package only. Using the \code{set.wpp.year} has the side effect of clearing up used data from the memory.  
+}
 \value{
 \code{get.wpp.year} returns the wpp year used through out the package.
 }
 
-%\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-%}
+
 \examples{
 get.wpp.year() # by default the wpp2015 is used
-set.wpp.year(2010) # any subsequent operations use the wpp2010 package
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

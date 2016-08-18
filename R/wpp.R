@@ -1,14 +1,9 @@
 utils::globalVariables("wpp.data.env")
 
-wpp.explore <- function(wpp.year=2015, host=NULL, package.suffix="plusMig", sim.dir=NULL, ...) {
-	if(!is.null(wpp.year)) set.wpp.year(wpp.year, package.suffix, sim.dir)
+wpp.explore <- function(wpp.year=2015, host=NULL,  sim.dir=NULL, ...) {
+	if(!is.null(wpp.year)) set.wpp.year(wpp.year, sim.dir)
 	if(missing(host)) host <- getOption("shiny.host", "0.0.0.0")
 	shiny::runApp(system.file('explore', package='wppPlusMigExplorer'), host = host, ...)
-}
-
-wpp.explore3d <- function(wpp.year=2015, package.suffix="plusMig") {
-	if(!is.null(wpp.year)) set.wpp.year(wpp.year, package.suffix)
-	shiny::runApp(system.file('bubbles', package='wppPlusMigExplorer'))
 }
 
 get.available.wpps <- function() c(2015)
@@ -44,21 +39,21 @@ wpp.by.countries <- function(data, countries) {
   data
 }
 
-set.wpp.year <- function(wpp.year, package.suffix="", sim.dir=NULL) {
+set.wpp.year <- function(wpp.year, sim.dir=NULL) {
 	check.wpp.revision(wpp.year)
 	# cleanup the environment
 	for (item in ls(wpp.data.env)) {
 		if(!(item %in% c('indicators', 'sim.dir'))) rm(list=item, envir=wpp.data.env)
 	}
+	package.suffix <- "plusMig"
 	wpp.data.env$package <- paste0('wpp', wpp.year)
-        if(package.suffix != "") 
-	    wpp.data.env$package <- c(paste0('wpp', wpp.year, package.suffix), wpp.data.env$package)
+	wpp.data.env$package <- c(paste0('wpp', wpp.year, package.suffix), wpp.data.env$package)
 	data('iso3166', envir=wpp.data.env, package="wppPlusMigExplorer")
 	# Filter out non-used countries
 	do.call('data', list("popM", package=wpp.data.env$package, envir=wpp.data.env))
 	wpp.data.env$iso3166 <- wpp.data.env$iso3166[is.element(wpp.data.env$iso3166$uncode, wpp.data.env$popM$country_code),]
 	if(!is.null(sim.dir)) wpp.data.env$sim.dir <- sim.dir
-	cat('\nDefault WPP package set to', wpp.data.env$package,'.\n')
+	cat('\nDefault WPP package set to', wpp.data.env$package, ' using sim.dir=', wpp.data.env$sim.dir, ' .\n')
 }
 
 get.wpp.year <- function() as.integer(substr(wpp.data.env$package[1], 4,7))
@@ -106,17 +101,16 @@ mig <- function(...) {
 
 migrate <- function(...) {
 	# observed
-	#browser()
-	if.not.exists.load('migration')
-	if.not.exists.load('pop')
-	migcounts <- wpp.data.env$migration
-	mergepop <- merge(migcounts[,'country_code', drop=FALSE], wpp.data.env$pop, sort=FALSE)
+	migcounts <- load.and.merge.datasets('migration', NULL)
+	pop <- load.and.merge.datasets('pop', NULL)
+	mergepop <- merge(migcounts[,'country_code', drop=FALSE], pop, sort=FALSE) # get pop into the same order as migration
 	ncols <- ncol(mergepop)
 	#browser()
 	rate.obs <- cbind(country_code=mergepop$country_code, (migcounts[,2:ncol(migcounts)]*200.)/((mergepop[,3:ncols]+mergepop[,2:(ncols-1)])/2.))
 	if(length(wpp.data.env$package)==1) return(rate.obs)
-	if.not.exists.load('mrateproj')
-	merge(rate.obs, wpp.data.env$mrateproj, by='country_code')
+	# projected
+	mrateproj <- load.and.merge.datasets('mrateproj', NULL)
+	merge(rate.obs, mrateproj, by='country_code')
 }
 	
 popagesex <- function(sexm, agem, ...){
@@ -272,9 +266,10 @@ tpop.ci <- function(which.pi, bound, ...) {
 
 popagesex.ci <- function(which.pi, bound, sexm, agem, ...) {
 	# allows only one age group
-	if(length(agem) > 1) 
+	if( is.null(sexm) || length(sexm) > 1 || is.null(agem) || length(agem) > 1) 
 		return(NULL)
-	data <- popmagesex.ci(which.pi, bound, sexm, ...)
+	data <- popmagesex.ci(which.pi, bound=bound, sexm=sexm, ...)
+	#browser()
 	sum.by.country.subset.age(data, agem)
 }
 

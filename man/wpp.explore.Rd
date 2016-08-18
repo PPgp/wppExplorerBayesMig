@@ -8,12 +8,13 @@ Launching WPP Explorer
 Main function of the package. It opens an interactive (shiny) interface in a browser. To exit the browser view, hit the Escape key.
 }
 \usage{
-wpp.explore(wpp.year = NULL, host = NULL, ...)
+wpp.explore(wpp.year = 2015, host = NULL, sim.dir = NULL, ...)
 }
 
 \arguments{
   \item{wpp.year}{Determines which \pkg{wpp} package is to be explored. Currently available are 2015 (default), 2012, and 2010.}
   \item{host}{Argument passed to \code{\link[shiny:runApp]{runApp}}. Defaults to the \code{shiny.host} option, or \code{"0.0.0.0"} if not set.}
+  \item{sim.dir}{Simulation directory used for probability calculations.}
   \item{\dots}{Additional arguments passed to \code{\link[shiny:runApp]{runApp}}.}
 }
 \details{

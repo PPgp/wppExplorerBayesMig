@@ -154,7 +154,7 @@ width=3
 			class = "container",
 			row(
 				col(0.5, ''),
-				col(10, HTML("<h4><font color='#d95f0e'><b>Probability that population in the selected country will be larger/smaller than the threshold:</b></font></h4>"))
+				col(10, HTML("<h5><font color='#d95f0e'><b>Probability that population in the selected country will be larger/smaller than the threshold:</b></font></h5>"))
 			),
 			row(
 				col(0.5, ''),

@@ -12,7 +12,7 @@ shinyServer(function(input, output, session) {
   	  					
   observe({
 		# disable log scale button if migration indicator (because of negatives)
-	  shinyjs::toggleState("trend.logscale", !indicator.fun() %in% c('mig', 'migrate'))
+	  shinyjs::toggleState("trend.logscale", !has.negatives.indicator())
 	})
   observe({
   	  ind.num <- as.integer(input$indicator)
@@ -32,9 +32,8 @@ shinyServer(function(input, output, session) {
 	  }
   })
   observe({
-  	ind <- indicator.fun()
-  	# switch log scale button to FALSE if migration indicator (because of negatives)
-  	 if(input$trend.logscale && ind %in% c('mig', 'migrate')) 
+  	# switch log scale button to FALSE if migration or growth indicator (because of negatives)
+	 if(input$trend.logscale && has.negatives.indicator())  
   	   updateCheckboxInput(session, "trend.logscale", value = FALSE)  	
   })
 
@@ -45,7 +44,8 @@ shinyServer(function(input, output, session) {
 	indicator.fun <- reactive({
 		wppPlusMigExplorer:::ind.fun(as.integer(input$indicator))
 	})
-	
+	has.negatives.indicator <- function() indicator.fun() %in% c('mig', 'migrate', 'popgrowth')
+
    indicatorDataLow <- reactive({
     wppPlusMigExplorer:::getUncertainty(input$indicator, input$uncertainty, 'low', input$indsexmult, input$indsex, input$selagesmult, input$selages)
   })
@@ -485,7 +485,7 @@ shinyServer(function(input, output, session) {
   		} else data <- data.zoom
   	}
   	g <- ggplot(data, aes(x=Year,y=value,colour=charcode, fill=charcode)) + geom_line() + theme(legend.title=element_blank())
-  	if (input$trend.logscale) g <- g + coord_trans(y="log2")
+  	if (input$trend.logscale && !has.negatives.indicator()) g <- g + coord_trans(y="log2")
   	isolate(ggplot.data$trends <- data)
   	
   	if(!is.null(low)) {
@@ -541,10 +541,12 @@ shinyServer(function(input, output, session) {
   	}
   	FALSE
   }
-  .get.prop.data <- function(data, tpop) {
+  .get.prop.data <- function(data, tpop, value.col='value') {
 	tpop <- wppPlusMigExplorer::wpp.by.countries(wppPlusMigExplorer::wpp.by.year(tpop, input$year), input$seltcountries)
   	colnames(tpop)[2] <- 'tpop' 
-  	data <- merge(data, tpop, by='charcode')  		
+  	data <- merge(data, tpop, by='charcode')
+  	if(value.col != 'value')
+  		colnames(data) <- sub(value.col, 'value', colnames(data))
   	data <- ddply(data, 'charcode', mutate, value = value/tpop)
   	data$tpop <- NULL
   	data
@@ -566,13 +568,22 @@ shinyServer(function(input, output, session) {
 			which.pi <- wppPlusMigExplorer:::.get.pi.name(as.integer(input$uncertainty))
 			which.pi <- if('half.child' %in% which.pi) 'half.child' else NULL # currently only half child for pyramid available
 			if(!is.null(which.pi)) {
+				value.name <- "value.3"
+				value.names <- grep("value", colnames(low), value=TRUE)
+				# remove all pi columns other than half.child
+				remove.value.names <- value.names[value.names != value.name]				 
+				low <- low[,-which(colnames(low) %in% remove.value.names)]
+				high <- high[,-which(colnames(high) %in% remove.value.names)]
   				tpop <- wppPlusMigExplorer::wpp.indicator('tpop.ci', which.pi=which.pi, bound='low')
-  				low <- .get.prop.data(low, tpop)
+  				low <- .get.prop.data(low, tpop, value.col=value.name)
   				lowval <- low$value
   				tpop <- wppPlusMigExplorer::wpp.indicator('tpop.ci', which.pi=which.pi, bound='high')
-  				high <- .get.prop.data(high, tpop)
+  				high <- .get.prop.data(high, tpop, value.col=value.name)
   				low$value <- pmin(low$value, high$value, na.rm=TRUE)
   				high$value <- pmax(high$value, lowval, na.rm=TRUE)
+  				# restore original pi colum name 
+  				colnames(low) <- sub('value', value.name, colnames(low))
+  				colnames(high) <- sub('value', value.name, colnames(high))
   			} else low <- NULL
   		}
   		if(!is.null(low)) {

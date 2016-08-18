@@ -5,7 +5,8 @@ Title: Explorer of World Population Prospects with Probabilistic Migration
 Author: Hana Sevcikova <hanas@uw.edu>
 Maintainer: Hana Sevcikova <hanas@uw.edu>
 Depends: R (>= 3.0.0)
-Imports: shiny (>= 0.12.0), shinyjs, plyr, reshape2, googleVis, wpp2015, wpp2015plusMig, Hmisc, ggplot2, DT
-Suggests: wpp2012, wpp2010, testthat
+Imports: shiny (>= 0.12.0), shinyjs, plyr, reshape2, googleVis, wpp2015plusMig, wpp2015, Hmisc, ggplot2, DT
+Suggests: testthat
+Remotes: PPgp/wpp2015plusMig
 Description: Explore data in the 'wpp2015plusMig' package using a 'shiny' interface.
 License: GPL (>= 2)
