@@ -1,6 +1,6 @@
 # wppPlusMigExplorer  
 
-[![Travis-CI Build Status](https://travis-ci.org/PPgp/wppPlusMigExplorer.svg?branch=master)](https://travis-ci.org/PPgp/wppPlusmigExplorer)
+[![Travis-CI Build Status](https://travis-ci.org/PPgp/wppPlusMigExplorer.svg?branch=master)](https://travis-ci.org/PPgp/wppPlusMigExplorer)
 
 Shiny-based R package to view data from the PPgp/wpp2015plusMig package, which is a modified version of the World Population Prospects (WPP) published by the United Nations Population Division (package wpp2015). In this version of the data, incertainty about migration was taken into account.
 
