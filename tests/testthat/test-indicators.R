@@ -6,9 +6,9 @@ set.year <- function(wpp.year) {
 }
 
 test_that('fertility age profile has the right dimension', {
-	prof <- wppExplorer:::get.age.profile.fert(2000, c('FR', 'AF'))
+	prof <- wppExplorerBayesMig:::get.age.profile.fert(2000, c('FR', 'AF'))
 	expect_true(all(dim(prof) == c(2*7, 4))) # 2 countries by 7 age groups
-	prof <- wppExplorer:::get.age.profile.fert(2020, 'GE')
+	prof <- wppExplorerBayesMig:::get.age.profile.fert(2020, 'GE')
 	expect_true(all(dim(prof) == c(7, 4)))
 	expect_true(all(prof$charcode == 'GE'))
 })
@@ -37,8 +37,8 @@ test_that('mortality values for high ages come out correctly', {
 
 test_that('migration rate has the right value', {
 	ind <- wpp.by.year(wpp.by.country(wpp.indicator('migrate'), 'AE'), 2005)$value
-	data(pop, package="wpp2015plusMig")
-	data(migration, package="wpp2015plusMig")
+	data(pop, package="wpp2015BayesMig")
+	data(migration, package="wpp2015BayesMig")
 	popUA <- sum(subset(pop, country_code==784)[c("2000", "2005")])/2
 	migUA <- subset(migration, country_code == 784)["2000-2005"]
 	expect_true(ind == migUA*200/popUA)
