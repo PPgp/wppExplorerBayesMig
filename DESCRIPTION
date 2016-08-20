@@ -1,12 +1,12 @@
-Package: wppPlusMigExplorer
+Package: wppExplorerBayesMig
 Version: 0.1-0
-Date: 2016-6-17
-Title: Explorer of World Population Prospects with Probabilistic Migration
+Date: 2016-8-19
+Title: Explorer of World Population Prospects Derived Using Probabilistic Migration
 Author: Hana Sevcikova <hanas@uw.edu>
 Maintainer: Hana Sevcikova <hanas@uw.edu>
 Depends: R (>= 3.0.0)
-Imports: shiny (>= 0.12.0), shinyjs, plyr, reshape2, googleVis, wpp2015plusMig, wpp2015, Hmisc, ggplot2, DT
+Imports: shiny (>= 0.12.0), shinyjs, plyr, reshape2, googleVis, wpp2015BayesMig, wpp2015, Hmisc, ggplot2, DT
 Suggests: testthat
-Remotes: PPgp/wpp2015plusMig
-Description: Explore data in the 'wpp2015plusMig' package using a 'shiny' interface.
+Remotes: PPgp/wpp2015BayesMig
+Description: Explore data in the 'wpp2015BayesMig' package using a 'shiny' interface.
 License: GPL (>= 2)

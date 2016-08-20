@@ -1,6 +1,6 @@
-\name{wppExplorer-package}
-\alias{wppExplorer-package}
-\alias{wppExplorer}
+\name{wppExplorerBayesMig-package}
+\alias{wppExplorerBayesMig-package}
+\alias{wppExplorerBayesMig}
 \docType{package}
 \title{
 Explorer of the World Population Prospects
@@ -11,16 +11,16 @@ Allows to interactively explore data from the World Population Prospects, contai
 }
 \details{
 \tabular{ll}{
-Package: \tab wppExplorer\cr
-Version: \tab 1.8-1\cr
-Date: \tab 2016-4-22\cr
+Package: \tab wppExplorerBayesMig\cr
+Version: \tab 0.1-0\cr
+Date: \tab 2016-8-19\cr
 Depends: \tab R (>= 3.0.0)\cr
 License: \tab GPL (>= 2)
 }
 
 The main function of the packge is \code{\link{wpp.explore}} which opens an interactive interface in a web browser. A few helper functions are available for a fast access to the (possibly filtered) data, e.g. \code{\link{wpp.indicator}}.
 
-The interface can be also accessed online: \url{https://rstudio.stat.washington.edu/shiny/wppExplorer/inst/explore/}
+%The interface can be also accessed online: \url{https://rstudio.stat.washington.edu/shiny/wppExplorer/inst/explore/}
 }
 
 \source{
@@ -28,6 +28,8 @@ The interface can be also accessed online: \url{https://rstudio.stat.washington.
  }
  
  \references{
+ 	Azose, J.J., Sevcikova, H., Raftery, A.E. (2016): Probabilistic population projections with migration uncertainty.  Proceedings of the National Academy of Sciences, 113:6460–6465. \url{http://www.pnas.org/content/113/23/6460.full}
+ 
  World Population Prospects: The 2015 Revision. (\url{http://esa.un.org/unpd/wpp}) Special Tabulations.
  
  A. E. Raftery,  N. Li, H. Sevcikova , P. Gerland, G. K. Heilig (2012). Bayesian probabilistic population projections for all countries. Proceedings of the National Academy of Sciences 109:13915-13921.
@@ -44,7 +46,7 @@ Maintainer: Hana Sevcikova <hanas@uw.edu>
 }
 
 \seealso{
-\code{\link[wpp2015:wpp2015-package]{wpp2015}}, \code{\link[wpp2012:wpp2012-package]{wpp2012}}, \code{\link[wpp2010:wpp2010-package]{wpp2010}}, \code{\link[shiny:shiny-package]{shiny}}, \code{\link{wpp.explore}}, \code{\link{wpp.indicator}}
+\code{\link[wpp2015BayesMig:wpp2015BayesMig-package]{wpp2015BayesMig}},  \code{\link[shiny:shiny-package]{shiny}}, \code{\link{wpp.explore}}, \code{\link{wpp.indicator}}
 }
 
 \keyword{ package }
