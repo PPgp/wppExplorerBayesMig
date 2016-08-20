@@ -28,7 +28,7 @@ col <- function(width, ...) {
 
  
 shinyUI(pageWithSidebar(
-  headerPanel(paste("WPP", wppPlusMigExplorer:::get.wpp.year(), "plus Migration Explorer")),
+  headerPanel(paste("WPP", wppExplorerBayesMig:::get.wpp.year(), "Explorer BayesMig")),
   sidebarPanel(
     shinyjs::useShinyjs(),
     geochartPrereqs,
@@ -39,8 +39,8 @@ shinyUI(pageWithSidebar(
 	),
     uiOutput('yearUI'),
     hr(),
-    selectInput('indicator', h5('Indicator:'), wppPlusMigExplorer:::wpp.data.env$indicators),
-    conditionalPanel(condition=paste("input.indicator >", sum(attr(wppPlusMigExplorer:::wpp.data.env$indicators, "settings")$by.age == FALSE)),
+    selectInput('indicator', h5('Indicator:'), wppExplorerBayesMig:::wpp.data.env$indicators),
+    conditionalPanel(condition=paste("input.indicator >", sum(attr(wppExplorerBayesMig:::wpp.data.env$indicators, "settings")$by.age == FALSE)),
     	tags$head(tags$style(type="text/css", "#selagesmult { height: 150px; width: 70px}"),
     			  tags$style(type="text/css", "#selages { height:25px; width: 70px}"),
     			  tags$style(type="text/css", "#indsexmult { height: 50px; width: 90px}"),
@@ -58,7 +58,7 @@ shinyUI(pageWithSidebar(
     			multiple=TRUE, selected=1),
     textOutput('uncertaintyNote'),
     hr(),
-    HTML("<p><small><b>Data Source:</b> United Nations, Department of Economic and Social Affairs, Population Division: <a href='http://esa.un.org/unpd/wpp' target='_blank'>World Population Prospects</a>. <a href='http://esa.un.org/unpd/ppp' target='_blank'>Probabilistic projections</a> based on <a href='http://www.pnas.org/content/early/2012/08/13/1211452109.abstract' target='_blank'>Raftery et al. (2012, PNAS)</a></small></p><p><small>Hana &#352;ev&#269;&#237;kov&#225;, <a href='https://www.csss.washington.edu' target='_blank'>CSSS</a>, University of Washington; <a href='http://bayespop.csss.washington.edu' target='_blank'>project website</a></small></p>"),
+    HTML("<p><small><b>Data Source:</b> Based on estimates for 1950-2015 from <a href='http://esa.un.org/unpd/wpp' target='_blank'>World Population Prospects 2015</a>. Probabilistic projections based on <a href='http://www.pnas.org/content/113/23/6460.full' target='_blank'>Azose et al. (2016, PNAS)</a></small></p><p><small>Hana &#352;ev&#269;&#237;kov&#225;, <a href='https://www.csss.washington.edu' target='_blank'>CSSS</a>, University of Washington; <a href='http://bayespop.csss.washington.edu' target='_blank'>project website</a></small></p>"),
 width=3
   ),
   mainPanel(

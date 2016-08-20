@@ -1,17 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Help with WPP Explorer</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Help with WPP Explorer BayesMig</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 
 <h3>Description</h3>
 
-<p>WPP Explorer allows you to interactively explore data from the <a href='http://esa.un.org/unpd/ppp' target="_blank">World Population Prospects</a>, contained in the R package <span class="pkg">wpp2015</span>. It is based on the <span class="pkg">shiny</span> R package. 
+<p>This is a modified version of the <a href="https://rstudio.stat.washington.edu/shiny/wppExplorer/inst/explore/">WPP Explorer</a> that allows you to interactively explore probabilistic population projections with migration uncertainty produced using the method by <a href='http://www.pnas.org/content/113/23/6460.full'>Azose et al. (2016)</a>  contained in the R package <span class="pkg">wpp2015BayesMig</span>. It is based on the <span class="pkg">shiny</span> R package. 
 </p>
 
 
 <h3>Data</h3>
-<p>The underlying datasets are based on estimates and projections of the
-United Nations, Department of Economic and Social Affairs, Population Division. Probabilistic projections were produced using the methods of
-Raftery et al. (2012, 2014), see <a href='http://bayespop.csss.washington.edu' target="_blank">our project website</a>.</p>
+<p>Population and migration projections were produced using the <a href='http://www.pnas.org/content/113/23/6460.full'>Azose et al. (2016)</a> methodology. All historical estimates as well as projections of fertility and mortality are from the <a href='http://esa.un.org/unpd/ppp' target="_blank">World Population Prospects 2015</a>, the
+United Nations, Department of Economic and Social Affairs, Population Division. See also <a href='http://bayespop.csss.washington.edu' target="_blank">our project website</a>.
 
 <h3>Navigation</h3>
 
@@ -28,18 +27,16 @@ The time slider in the left pane defines the year or time period for which data 
 
 <p>The Rosling Chart is based on <a href="https://en.wikipedia.org/wiki/Hans_Rosling" target="_blank">Hans Rosling's</a> <a href="http://www.gapminder.org/world/"  target="_blank">gapminder</a>. After opening the tab, the x and y axes are preloaded with the first three indicators from the left panel. You can add indicators to the axes by selecting it on the left and clicking the "Add Indicator" button in the right panel. Age-specific indicators can also be selected and added to the chart. The chart is created via the R package <span class="pkg">googleVis</span> which for the rendering requires an Internet connection and a Flash player. See the <span class="pkg">googleVis</span> documentation for more details.</p>
 
-<h3>Note</h3>
-The wppExplorer can be either viewed <a href="https://rstudio.stat.washington.edu/shiny/wppExplorer/inst/explore/">online</a> or installed from <a href="https://cran.r-project.org" target="_blank">CRAN</a> as a standalone R package. The standalone version can be used for example to access values that are underlying the various visualizations. 
 
 
 <h3>Maintainer</h3>
 <p>Hana &#352;ev&#269;&#237;kov&#225;, Center for Statistics and the Social Sciences, University of Washington.</p>
 
-<h3>Acknowledgments</h3>
-<p>The idea and code of the basic layout was taken from one of Joe Cheng's examples presented at the useR Meetup in Seattle 2013. This is based on work done in collaboration with the United Nations Population Division, and we would like to thank all their staff, including Patrick Gerland for his thorough testing and useful comments and suggestions, and John Wilmoth for his support of the project.
-</p>
+
 
 <h3>References</h3> 
+Azose, J.J., &#352;ev&#269;&#237;kov&#225;, H., Raftery, A.E. (2016): <a href="http://www.pnas.org/content/113/23/6460.full">Probabilistic population projections with migration uncertainty</a>.  <i>Proceedings of the National Academy of Sciences</i> 113:6460–6465.
+
 <p>P. Gerland, A. E. Raftery, H. &#352;ev&#269;&#237;kov&#225;, N. Li, D. Gu, T. Spoorenberg, L. Alkema, B. K. Fosdick, J. L. Chunn, N. Lalic, G. Bay, T. Buettner, G. K. Heilig,  J. Wilmoth (2014). World Population Stabilization Unlikely This Century. Science 346:234-237.
 </p>
 <p>A. E. Raftery,  N. Li, H. &#352;ev&#269;&#237;kov&#225; , P. Gerland, G. K. Heilig (2012). Bayesian probabilistic population projections for all countries. Proceedings of the National Academy of Sciences 109:13915-13921.
@@ -47,7 +44,7 @@ The wppExplorer can be either viewed <a href="https://rstudio.stat.washington.ed
 
 
 
-<hr /><div style="text-align: center;">[Package <em>wppExplorer</em> version 1.8-1, 4/22/2016]</div>
+<hr /><div style="text-align: center;">[Package <em>wppExplorerBayesMig</em> version 0.1-0, 8/19/2016]</div>
 </body>
 </html>
 

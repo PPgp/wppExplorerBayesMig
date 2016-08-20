@@ -3,7 +3,7 @@ utils::globalVariables("wpp.data.env")
 wpp.explore <- function(wpp.year=2015, host=NULL,  sim.dir=NULL, ...) {
 	if(!is.null(wpp.year)) set.wpp.year(wpp.year, sim.dir)
 	if(missing(host)) host <- getOption("shiny.host", "0.0.0.0")
-	shiny::runApp(system.file('explore', package='wppPlusMigExplorer'), host = host, ...)
+	shiny::runApp(system.file('explore', package='wppExplorerBayesMig'), host = host, ...)
 }
 
 get.available.wpps <- function() c(2015)
@@ -48,7 +48,7 @@ set.wpp.year <- function(wpp.year, sim.dir=NULL) {
 	package.suffix <- "plusMig"
 	wpp.data.env$package <- paste0('wpp', wpp.year)
 	wpp.data.env$package <- c(paste0('wpp', wpp.year, package.suffix), wpp.data.env$package)
-	data('iso3166', envir=wpp.data.env, package="wppPlusMigExplorer")
+	data('iso3166', envir=wpp.data.env, package="wppExplorerBayesMig")
 	# Filter out non-used countries
 	do.call('data', list("popM", package=wpp.data.env$package, envir=wpp.data.env))
 	wpp.data.env$iso3166 <- wpp.data.env$iso3166[is.element(wpp.data.env$iso3166$uncode, wpp.data.env$popM$country_code),]

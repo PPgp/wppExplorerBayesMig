@@ -28,8 +28,8 @@ The main function of the packge is \code{\link{wpp.explore}} which opens an inte
  }
  
  \references{
- 	Azose, J.J., Sevcikova, H., Raftery, A.E. (2016): Probabilistic population projections with migration uncertainty.  Proceedings of the National Academy of Sciences, 113:6460–6465. \url{http://www.pnas.org/content/113/23/6460.full}
- 
+ 	Azose, J.J., Sevcikova, H., Raftery, A.E. (2016): Probabilistic population projections with migration uncertainty.  Proceedings of the National Academy of Sciences, 113:6460-6465. \url{http://www.pnas.org/content/113/23/6460.full}
+ 	
  World Population Prospects: The 2015 Revision. (\url{http://esa.un.org/unpd/wpp}) Special Tabulations.
  
  A. E. Raftery,  N. Li, H. Sevcikova , P. Gerland, G. K. Heilig (2012). Bayesian probabilistic population projections for all countries. Proceedings of the National Academy of Sciences 109:13915-13921.

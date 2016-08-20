@@ -1,4 +1,4 @@
-library(wppPlusMigExplorer)
+library(wppExplorerBayesMig)
 library(reshape2)
 library(googleVis)
 library(plyr)
@@ -7,8 +7,8 @@ library(bayesPop)
 
 shinyServer(function(input, output, session) {
 	ind.has.uncertainty <- function(ind)
-		((wppPlusMigExplorer:::ind.is.low.high(ind) || wppPlusMigExplorer:::ind.is.half.child(ind)) && 
-  	  					wppPlusMigExplorer:::get.wpp.year()>2010)
+		((wppExplorerBayesMig:::ind.is.low.high(ind) || wppExplorerBayesMig:::ind.is.half.child(ind)) && 
+  	  					wppExplorerBayesMig:::get.wpp.year()>2010)
   	  					
   observe({
 		# disable log scale button if migration indicator (because of negatives)
@@ -22,9 +22,9 @@ shinyServer(function(input, output, session) {
 	  	selected.choices <- input$uncertainty
 	  	available.choices <- structure(as.character(1:3), names=c('80%', '95%', '+-1/2child'))
 	  	uncertainty.choices <- c()
-	  	if(wppPlusMigExplorer:::ind.is.low.high(ind.num)) 
+	  	if(wppExplorerBayesMig:::ind.is.low.high(ind.num)) 
 	  		uncertainty.choices <- available.choices[1:2]
-	  	if(wppPlusMigExplorer:::ind.is.half.child(ind.num))
+	  	if(wppExplorerBayesMig:::ind.is.half.child(ind.num))
 	  		uncertainty.choices <- c(uncertainty.choices, available.choices[3])
 	  	selected <- uncertainty.choices[uncertainty.choices %in% selected.choices]
 	  	updateSelectInput(session, 'uncertainty', choices=uncertainty.choices, 
@@ -38,20 +38,20 @@ shinyServer(function(input, output, session) {
   })
 
   indicatorData <- reactive({
-    wppPlusMigExplorer:::lookupByIndicator(input$indicator, input$indsexmult, input$indsex, input$selagesmult, input$selages)
+    wppExplorerBayesMig:::lookupByIndicator(input$indicator, input$indsexmult, input$indsex, input$selagesmult, input$selages)
   })
   
 	indicator.fun <- reactive({
-		wppPlusMigExplorer:::ind.fun(as.integer(input$indicator))
+		wppExplorerBayesMig:::ind.fun(as.integer(input$indicator))
 	})
 	has.negatives.indicator <- function() indicator.fun() %in% c('mig', 'migrate', 'popgrowth')
 
    indicatorDataLow <- reactive({
-    wppPlusMigExplorer:::getUncertainty(input$indicator, input$uncertainty, 'low', input$indsexmult, input$indsex, input$selagesmult, input$selages)
+    wppExplorerBayesMig:::getUncertainty(input$indicator, input$uncertainty, 'low', input$indsexmult, input$indsex, input$selagesmult, input$selages)
   })
   
   indicatorDataHigh <- reactive({
-    wppPlusMigExplorer:::getUncertainty(input$indicator, input$uncertainty, 'high', input$indsexmult, input$indsex, input$selagesmult, input$selages)
+    wppExplorerBayesMig:::getUncertainty(input$indicator, input$uncertainty, 'high', input$indsexmult, input$indsex, input$selagesmult, input$selages)
   })
   
   data <- reactive({
@@ -63,51 +63,51 @@ shinyServer(function(input, output, session) {
   })
   
   pyramid.data <- reactive({
-  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries)
+  	wppExplorerBayesMig:::get.pyramid.data(input$year, input$seltcountries)
   })
   
   # pyramid.data.low <- reactive({
-  	# wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
+  	# wppExplorerBayesMig:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
   # })
   
    # pyramid.data.high <- reactive({
-  	# wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
+  	# wppExplorerBayesMig:::get.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
   # })
   
    pyramid.data.low <- reactive({
-  	wppPlusMigExplorer:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
+  	wppExplorerBayesMig:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
   })
   
    pyramid.data.high <- reactive({
-  	wppPlusMigExplorer:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
+  	wppExplorerBayesMig:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
   })
   
   age.profile.mortM <- reactive({
-  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(M='mxM'), load.pred=FALSE)
+  	wppExplorerBayesMig:::get.pyramid.data(input$year, input$seltcountries, indicators=c(M='mxM'), load.pred=FALSE)
   })
   
   age.profile.mortF <- reactive({
-  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(F='mxF'), load.pred=FALSE)
+  	wppExplorerBayesMig:::get.pyramid.data(input$year, input$seltcountries, indicators=c(F='mxF'), load.pred=FALSE)
   })
   
   age.profile.popM <- reactive({
-  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(M='popM'))
+  	wppExplorerBayesMig:::get.pyramid.data(input$year, input$seltcountries, indicators=c(M='popM'))
   })
   
   age.profile.popF <- reactive({
-  	wppPlusMigExplorer:::get.pyramid.data(input$year, input$seltcountries, indicators=c(F='popF'))
+  	wppExplorerBayesMig:::get.pyramid.data(input$year, input$seltcountries, indicators=c(F='popF'))
   })
   
   age.profile.fert <- reactive({
-  	wppPlusMigExplorer:::get.age.profile.fert(input$year, input$seltcountries)
+  	wppExplorerBayesMig:::get.age.profile.fert(input$year, input$seltcountries)
   })
   
   age.profile.pfert <- reactive({
-  	wppPlusMigExplorer:::get.age.profile.pfert(input$year, input$seltcountries)
+  	wppExplorerBayesMig:::get.age.profile.pfert(input$year, input$seltcountries)
   })
 
   
-  data.env <- function() wppPlusMigExplorer:::wpp.data.env
+  data.env <- function() wppExplorerBayesMig:::wpp.data.env
     
   year.range <- reactiveValues(min=1955, max=2100)
     
@@ -131,7 +131,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$indicatorDesc <- renderText({
-  	wppPlusMigExplorer:::ind.definition(as.integer(input$indicator))
+  	wppExplorerBayesMig:::ind.definition(as.integer(input$indicator))
   })
   
   output$uncertaintyNote <- renderText({
@@ -238,8 +238,8 @@ shinyServer(function(input, output, session) {
   		 if(nrow(data.l) > 0) {		
     		data.h <- wpp.by.year(indicatorDataHigh(), input$year)
     		for(i in 1:3) {
-    			colnames(data.l) <- sub(paste0('value.',i), paste('low', wppPlusMigExplorer:::.get.pi.name.for.label(i)), colnames(data.l))
-    			colnames(data.h) <- sub(paste0('value.',i), paste('high', wppPlusMigExplorer:::.get.pi.name.for.label(i)), colnames(data.h))
+    			colnames(data.l) <- sub(paste0('value.',i), paste('low', wppExplorerBayesMig:::.get.pi.name.for.label(i)), colnames(data.l))
+    			colnames(data.h) <- sub(paste0('value.',i), paste('high', wppExplorerBayesMig:::.get.pi.name.for.label(i)), colnames(data.h))
     		}
     		ncoldata <- ncol(data)
   			data <- merge(data, data.l, by='charcode')
@@ -291,7 +291,7 @@ shinyServer(function(input, output, session) {
   		else ages <- paste(seq(0, by=5, length=20), seq(4, by=5, length=20), sep='-')
   		ages <- c(ages, '100+')
   	}
-  	if (wppPlusMigExplorer:::ind.no.age.sum(as.integer(input$indicator))) { # no multiple choices allowed
+  	if (wppExplorerBayesMig:::ind.no.age.sum(as.integer(input$indicator))) { # no multiple choices allowed
   		multiple <- FALSE
 		name <- 'selages'
 		selected<-NULL
@@ -305,7 +305,7 @@ shinyServer(function(input, output, session) {
 	
 	output$sexselection <- renderUI({
 		choices<-if(indicator.fun() %in% c('fertage', 'pfertage')) c(Female="F") else c(Female="F", Male="M")
-		if(wppPlusMigExplorer:::ind.no.age.sum(as.integer(input$indicator))){
+		if(wppExplorerBayesMig:::ind.no.age.sum(as.integer(input$indicator))){
   			multiple <- FALSE
   			selected <- NULL
   			name <- 'indsex'
@@ -393,7 +393,7 @@ shinyServer(function(input, output, session) {
   output$trends <- reactive({
 	data <- get.trends()
 	if(is.null(data)) return(data)
-    list(data = wppPlusMigExplorer:::preserveStructure(data$casted),
+    list(data = wppExplorerBayesMig:::preserveStructure(data$casted),
          options = list(
            hAxis = list(viewWindowMode = 'explicit', viewWindow = list(
              min = data$hrange[1], max = data$hrange[2]
@@ -431,7 +431,7 @@ shinyServer(function(input, output, session) {
 	}
 	if(is.null(data)) return(NULL)
 	data <- cast.profile.data(data)
-    list(data = wppPlusMigExplorer:::preserveStructure(data$casted),
+    list(data = wppExplorerBayesMig:::preserveStructure(data$casted),
          options = list(
            hAxis = list(slantedText=fun!='mortagesex',
            				viewWindowMode = 'explicit', viewWindow = list(
@@ -496,7 +496,7 @@ shinyServer(function(input, output, session) {
   			g <- g + geom_ribbon(aes_string(ymin=colnames(data)[idx][1], ymax=colnames(data)[idx][2], 
   											fill="charcode", colour="charcode", linetype=NA), alpha=c(0.3, 0.2, 0.1)[i])
   			if(!is.null(line.data)) colnames(line.data) <- c('charcode', 'Year', 'low', 'high', 'variant')
-  			line.data <- rbind(line.data, setNames(cbind(data[,c(1,2,idx)], wppPlusMigExplorer:::.get.pi.name.for.label(i)), colnames(line.data)))
+  			line.data <- rbind(line.data, setNames(cbind(data[,c(1,2,idx)], wppExplorerBayesMig:::.get.pi.name.for.label(i)), colnames(line.data)))
   			tmp1 <- tmp2 <- data
   			tmp1[,'value'] <- data[,colnames(data)[idx][1]]
   			tmp2[,'value'] <- data[,colnames(data)[idx][2]]
@@ -542,7 +542,7 @@ shinyServer(function(input, output, session) {
   	FALSE
   }
   .get.prop.data <- function(data, tpop, value.col='value') {
-	tpop <- wppPlusMigExplorer::wpp.by.countries(wppPlusMigExplorer::wpp.by.year(tpop, input$year), input$seltcountries)
+	tpop <- wppExplorerBayesMig::wpp.by.countries(wppExplorerBayesMig::wpp.by.year(tpop, input$year), input$seltcountries)
   	colnames(tpop)[2] <- 'tpop' 
   	data <- merge(data, tpop, by='charcode')
   	if(value.col != 'value')
@@ -557,7 +557,7 @@ shinyServer(function(input, output, session) {
   	proportion <- input$proppyramids
   	data <- pyramid.data()
   	if(proportion) {
-  		tpop <- wppPlusMigExplorer::wpp.indicator('tpop')
+  		tpop <- wppExplorerBayesMig::wpp.indicator('tpop')
   		data <- .get.prop.data(data, tpop)
   	}
 	low <- pyramid.data.low()
@@ -565,7 +565,7 @@ shinyServer(function(input, output, session) {
   		high <- pyramid.data.high()
   		if(proportion) {
 			#browser()
-			which.pi <- wppPlusMigExplorer:::.get.pi.name(as.integer(input$uncertainty))
+			which.pi <- wppExplorerBayesMig:::.get.pi.name(as.integer(input$uncertainty))
 			which.pi <- if('half.child' %in% which.pi) 'half.child' else NULL # currently only half child for pyramid available
 			if(!is.null(which.pi)) {
 				value.name <- "value.3"
@@ -574,10 +574,10 @@ shinyServer(function(input, output, session) {
 				remove.value.names <- value.names[value.names != value.name]				 
 				low <- low[,-which(colnames(low) %in% remove.value.names)]
 				high <- high[,-which(colnames(high) %in% remove.value.names)]
-  				tpop <- wppPlusMigExplorer::wpp.indicator('tpop.ci', which.pi=which.pi, bound='low')
+  				tpop <- wppExplorerBayesMig::wpp.indicator('tpop.ci', which.pi=which.pi, bound='low')
   				low <- .get.prop.data(low, tpop, value.col=value.name)
   				lowval <- low$value
-  				tpop <- wppPlusMigExplorer::wpp.indicator('tpop.ci', which.pi=which.pi, bound='high')
+  				tpop <- wppExplorerBayesMig::wpp.indicator('tpop.ci', which.pi=which.pi, bound='high')
   				high <- .get.prop.data(high, tpop, value.col=value.name)
   				low$value <- pmin(low$value, high$value, na.rm=TRUE)
   				high$value <- pmax(high$value, lowval, na.rm=TRUE)
@@ -616,7 +616,7 @@ shinyServer(function(input, output, session) {
   			g <- g + geom_ribbon(data=subset(data, sex=='M'), aes_string(ymin=colnames(data)[idx][2], ymax=colnames(data)[idx][1], 
   											fill="charcode", colour="charcode", linetype=NA), alpha=c(0.3, 0.2, 0.1)[i])
   			#line.data <- rbind(line.data, setNames(cbind(data[,c(1:4,idx)], 
-  			#											variant=wppPlusMigExplorer:::.get.pi.name.for.label(i)), 
+  			#											variant=wppExplorerBayesMig:::.get.pi.name.for.label(i)), 
   			#										c(colnames(data)[1:4], 'low', 'high', 'variant')))
   			tmp1 <- tmp2 <- data
 			tmp1[,'value'] <- data[,colnames(data)[idx][1]]
@@ -679,8 +679,8 @@ shinyServer(function(input, output, session) {
 	})
   
   # .get.digits <- reactive({
-  	# print(wppPlusMigExplorer:::ind.digits(as.integer(input$indicator)))
-  	# wppPlusMigExplorer:::ind.digits(as.integer(input$indicator))
+  	# print(wppExplorerBayesMig:::ind.digits(as.integer(input$indicator)))
+  	# wppExplorerBayesMig:::ind.digits(as.integer(input$indicator))
   # })
   
   # format_num <- function(col, digits) {
@@ -694,14 +694,14 @@ shinyServer(function(input, output, session) {
 	if(is.null(data)) return(data)
 	df <- as.data.frame(data$casted[,-1])
 	if(ncol(df) > 1) {
-		if(wppPlusMigExplorer:::ind.sum.in.table(as.integer(input$indicator))) {
+		if(wppExplorerBayesMig:::ind.sum.in.table(as.integer(input$indicator))) {
 			df <- cbind(df, rowSums(df))
 			colnames(df)[ncol(df)] <- 'Sum'
 		}
 	} else colnames(df) <- input$seltcountries # one country selected
 	
 	df <- t(df)
-	#df <- t(as.data.frame(lapply(df, format_num, digits=wppPlusMigExplorer:::ind.digits(as.integer(input$indicator)))))
+	#df <- t(as.data.frame(lapply(df, format_num, digits=wppExplorerBayesMig:::ind.digits(as.integer(input$indicator)))))
 	# df <- t(data$casted[,-1]) # remove year column
 	#browser()
 	colnames(df) <- as.integer(data$casted[,'Year'])
@@ -709,14 +709,14 @@ shinyServer(function(input, output, session) {
 	}, include.rownames = TRUE)
 
   output$trendstabletitle <- renderText({
- 	wppPlusMigExplorer:::get.indicator.title(input$indicator, input$indsexmult, input$indsex, input$selagesmult, input$selages) 	
+ 	wppExplorerBayesMig:::get.indicator.title(input$indicator, input$indsexmult, input$indsex, input$selagesmult, input$selages) 	
    })
    
    all.data <- reactive({
-   		if(is.null(wppPlusMigExplorer:::wpp.data.env$mchart.data)) {
+   		if(is.null(wppExplorerBayesMig:::wpp.data.env$mchart.data)) {
    			inds <- unique(c(input$indicator, 1,2,0,4))[1:4]
    		} else inds <- input$indicator
-		wppPlusMigExplorer:::lookupByIndicator.mchart(inds, input$indsexmult, input$indsex, input$selagesmult, input$selages)
+		wppExplorerBayesMig:::lookupByIndicator.mchart(inds, input$indsexmult, input$indsex, input$selagesmult, input$selages)
 	})
 	
   output$graphgvis <- renderGvis({

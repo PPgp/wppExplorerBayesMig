@@ -1,4 +1,4 @@
 library(testthat)
-library(wppPlusMigExplorer)
+library(wppExplorerBayesMig)
 
-test_check("wppPlusMigExplorer")
+test_check("wppExplorerBayesMig")
