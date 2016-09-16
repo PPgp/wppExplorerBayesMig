@@ -264,6 +264,24 @@ tpop.ci <- function(which.pi, bound, ...) {
 	load.and.merge.datasets(dataset.name, NULL)
 }
 
+
+tpopM.ci <- function(which.pi, bound, ...) {
+	tpopX.ci("M", which.pi, bound)
+}
+
+tpopF.ci <- function(which.pi, bound, ...) {
+	tpopX.ci("F", which.pi, bound)
+}
+
+tpopX.ci <- function(sex, which.pi, bound) {
+	# which.pi is for '80', '95' or 'half.child'
+	# bound is 'low' or 'high'
+	if(wpp.year.from.package.name(wpp.data.env$package[1]) <= 2010) return(NULL)
+	dataset.name <- if(which.pi == 'half.child') paste0('popT', sex, 'proj', capitalize(bound))
+					else paste0('popT', sex, 'proj', which.pi, .pi.suffix(bound))
+	load.and.merge.datasets(dataset.name, NULL)
+}
+
 popagesex.ci <- function(which.pi, bound, sexm, agem, ...) {
 	# allows only one age group
 	if( is.null(sexm) || length(sexm) > 1 || is.null(agem) || length(agem) > 1) 

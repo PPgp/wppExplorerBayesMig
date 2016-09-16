@@ -3,17 +3,17 @@
 \alias{wppExplorerBayesMig}
 \docType{package}
 \title{
-Explorer of the World Population Prospects
+Explorer of the World Population Prospects with Migration Uncertainty
 }
 
 \description{
-Allows to interactively explore data from the World Population Prospects, contained in packages \pkg{wpp2015}, \pkg{wpp2012} and \pkg{wpp2010}. It is based on the \pkg{shiny} package.
+	This is a modified version of the \pkg{wppExplorer} package that allows you to interactively explore probabilistic population projections with migration uncertainty produced using the method by Azose et al. (2016)  contained in the R package \pkg{wpp2015BayesMig}.
 }
 \details{
 \tabular{ll}{
 Package: \tab wppExplorerBayesMig\cr
 Version: \tab 0.1-0\cr
-Date: \tab 2016-8-19\cr
+Date: \tab 2016-9-16\cr
 Depends: \tab R (>= 3.0.0)\cr
 License: \tab GPL (>= 2)
 }
@@ -24,7 +24,8 @@ The main function of the packge is \code{\link{wpp.explore}} which opens an inte
 }
 
 \source{
- The underlying datasets are based on estimates and projections of the United Nations, Department of Economic and Social Affairs, Population Division (2011, 2013, 2015). The probabilistic projections were produced with the method of Raftery et al. (2012).
+	Population and migration projections were produced using the Azose et al. (2016) methodology. All historical estimates as well as projections of fertility and mortality are from the World Population Prospects 2015, the
+United Nations, Department of Economic and Social Affairs, Population Division.
  }
  
  \references{

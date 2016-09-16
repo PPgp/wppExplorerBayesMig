@@ -30,8 +30,8 @@ get.indicator.choices <- function() {
 	ind.df[c('popagesex', 'mortagesex', 'fertage', 'pfertage'), 'by.age'] <- TRUE  # display sex and age menu
 	ind.df[c('mortagesex','fertage'), 'no.age.sum'] <- TRUE                        # don't allow multiple age- and sex-selection
 	ind.df[c('tpop', 'tpopF', 'tpopM', 'mig','popagesex'), 'sum.in.table'] <- TRUE # show sum in the trend table
-	ind.df[c('fert', 'leF', 'leM', 'tpop', 'popagesex', 'mig', 'migrate'), 'low.high'] <- TRUE       # has uncertainty
-	ind.df[c('fert', 'tpop', 'popagesex'), 'half.child'] <- TRUE     # has half.child variant
+	ind.df[c('fert', 'leF', 'leM', 'tpop', 'tpopF', 'tpopM', 'popagesex', 'mig', 'migrate'), 'low.high'] <- TRUE       # has uncertainty
+	ind.df[c('fert', 'tpop', 'tpopF', 'tpopM', 'popagesex'), 'half.child'] <- TRUE     # has half.child variant
 	ind.df[c('fert', 'leF', 'leM', 'mig', 'sexratio', 'mortagesex', 'fertage', 'pfertage'), 'mid.years'] <- TRUE # use mid years in slider (not implemented)
 	ind.df[c('tpop', 'tpopF', 'tpopM','popagesex'), 'digits'] <- 0                 # number of digits in trend table (not implemented)
 	ind.df['mortagesex', 'digits'] <- 4
@@ -57,6 +57,6 @@ wpp.data.env$package <- c("wpp2015BayesMig", "wpp2015")
 do.call('data', list("popM", package=wpp.data.env$package, envir=wpp.data.env))
 wpp.data.env$iso3166 <- wpp.data.env$iso3166[is.element(wpp.data.env$iso3166$uncode, wpp.data.env$popM$country_code),]
 wpp.data.env$sim.dir <- '/mnt/shinydata/apps/wppExplorerBayesMig/simulation' # stat rstudio shiny server
-wpp.data.env$sim.dir <- '/Users/hana/bayespop/R/Pop/wpp2015/sim07292015' # grafton
+#wpp.data.env$sim.dir <- '/Users/hana/bayespop/R/Pop/wpp2015/sim07292015' # grafton
 #wpp.data.env$sim.dir <- '/Users/hana/bayespop/R/Pop/migration/wpp2015/mig1T07152016_15-34' # brno
 

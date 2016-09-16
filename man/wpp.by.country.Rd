@@ -35,8 +35,8 @@ A data frame filtered by the input arguments.
 \code{\link{wpp.indicator}}
 }
 \examples{
-tfr <- wpp.indicator("fert")
-tfr.germany.2010 <- wpp.by.country(wpp.by.year(tfr, 2010), 'DE')
+median.mig <- wpp.indicator("mig")
+mig.germany.2050 <- wpp.by.country(wpp.by.year(median.mig, 2050), 'DE')
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

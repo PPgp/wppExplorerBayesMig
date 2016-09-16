@@ -1,10 +1,10 @@
 \name{wpp.indicator}
 \alias{wpp.indicator}
 \title{
-Accessing a WPP Indicator
+Accessing Data
 }
 \description{
-An interface for accessing a WPP indicator, where datasets with observed and predicted data are merged. The resulting data frame is in a "melted" format.
+An interface for accessing the underlying data, where datasets with observed and predicted data are merged. The resulting data frame is in a "melted" format.
 }
 \usage{
 wpp.indicator(what, \dots)
@@ -17,11 +17,11 @@ wpp.indicator(what, \dots)
   		\item{leF}{Female life expectancy. Merges datasets \code{\link[wpp2015:e0F]{e0F}} and \code{\link[wpp2015:e0F]{e0Fproj}}.}
   		\item{leM}{Male life expectancy. Merges datasets \code{\link[wpp2015:e0M]{e0M}} and \code{\link[wpp2015:e0M]{e0Mproj}}.}
   		\item{tpop}{Total population. Uses datasets with age- and sex-specific population counts and agregates over sexes and ages.}
-  		\item{tpopF}{Total female population. Uses datasets \code{\link[wpp2015:popF]{popF}} and \code{\link[wpp2015:popF]{popFprojMed}} and aggregates over ages.}
-  		\item{tpopM}{Total male population. Uses datasets \code{\link[wpp2015:popM]{popM}} and \code{\link[wpp2015:popM]{popMprojMed}} and aggregates over ages.}
-  		\item{mig}{Total net migration. For \pkg{wpp2015}, the dataset \code{\link[wpp2015:migration]{migration}} is used. For \pkg{wpp2012} and \pkg{wpp2010} it aggregates datasets \code{\link[wpp2012:migrationF]{migrationF}} and \code{\link[wpp2012:migrationM]{migrationM}} over ages.}
-  		\item{migrate}{Annual migration rate per thousand population. The denominator is approximated with the average population (\eqn{(P_{t}+P_{t-1})/2}).} 
-  		\item{popagesex}{Population by sex and age. Uses datasets \code{\link[wpp2015:popM]{popM}} and \code{\link[wpp2015:popM]{popMprojMed}}. It requires two arguments in \dots, namely \code{sexm=c("F", "M")} and \cr\code{agem=c("0-4", "5-9", ..., "95-99", "100+")}. The function aggregates population counts over the given sex and age groups.}
+  		\item{tpopF}{Total female population. Uses datasets \code{\link[wpp2015BayesMig:popF]{popF}} and \code{\link[wpp2015BayesMig:popF]{popFprojMed}} and aggregates over ages.}
+  		\item{tpopM}{Total male population. Uses datasets \code{\link[wpp2015BayesMig:popM]{popM}} and \code{\link[wpp2015BayesMig:popM]{popMprojMed}} and aggregates over ages.}
+  		\item{mig}{Total net migration. The datasets \code{\link[wpp2015BayesMig:migration]{migration}} and \code{\link[wpp2015BayesMig:migproj]{migproj}} are merged.}
+  		\item{migrate}{Annual migration rate per thousand population. For historical estimates, the rate is computed from net migration and population. The denominator is approximated with the average population (\eqn{(P_{t}+P_{t-1})/2}). Projections are taken from the \code{\link[wpp2015BayesMig:mrateproj]{mrateproj}} dataset.} 
+  		\item{popagesex}{Population by sex and age. Uses merged datasets of \code{\link[wpp2015BayesMig:popM]{popM}} with  \code{\link[wpp2015BayesMig:popMprojMed]{popMprojMed}} and \code{\link[wpp2015BayesMig:popF]{popF}} with  \code{\link[wpp2015BayesMig:popFprojMed]{popFprojMed}}. It requires two arguments in \dots, namely \code{sexm=c("F", "M")} and \cr\code{agem=c("0-4", "5-9", ..., "95-99", "100+")}. The function aggregates population counts over the given sex and age groups.}
   		\item{mortagesex}{Mortality by sex and age. Uses datasets \code{\link[wpp2015:mxF]{mxF}} and \code{\link[wpp2015:mxM]{mxM}}. It requires two atguments in \dots, namely \code{sex} which is either "F" or "M", and \code{age} which is one of ("0", "1", "5", "10", "15", "20", ... "95", "100+").}
   		\item{fertage}{Age-specific fertility rate. Uses datasets \code{\link[wpp2015:tfr]{tfr}} and \code{\link[wpp2015:tfr]{tfrprojMed}} which are merged together and dataset \code{\link[wpp2015:percentASFR]{percentASFR}} to derive age-specific rates. It requires one argument in \dots, namely \code{age} which is one of ("15-19", "20-24", ..., "45-49").}
   		\item{pfertage}{Percent age-specific fertility. Corresponds to the dataset  \code{\link[wpp2015:percentASFR]{percentASFR}}. Argument \code{agem} as defined above giving one or more age categories is required.}
@@ -34,7 +34,7 @@ wpp.indicator(what, \dots)
   		\item{oadratio}{Old-age dependency ratio. Ratio of population of age 65+ to population of age 15-64.}
   		\item{psratio}{Potential support ratio. Inverse of old-age dependency ratio.}
   		\item{popgrowth}{Average annual population growth (\eqn{log(P_t / P_{t-1})/5}).}
-  		\item{fert.ci, leF.ci, leM.ci, tpop.ci, popagesex.ci}{Lower or upper bound of the corresponding indicator. Requires argument \code{which.pi} which is one of \dQuote{80}, \dQuote{95}, \dQuote{half.child}, and an argument \code{bound} which is
+  		\item{fert.ci, leF.ci, leM.ci, tpop.ci, tpopF.ci, tpopM.ci, popagesex.ci, mig.ci, migrate.ci}{Lower or upper bound of the corresponding indicator. Requires argument \code{which.pi} which is one of \dQuote{80}, \dQuote{95}, \dQuote{half.child}, and an argument \code{bound} which is
   			either \dQuote{low} or \dQuote{high}. Arguments \code{sexm} and \code{agem} (as defined above, but of length one) are required for popagesex.ci.}
   	}
 }
@@ -61,14 +61,14 @@ Hana Sevcikova
 \code{\link{wpp.by.country}}, \code{\link{wpp.by.year}}
 }
 \examples{
-	tfr <- wpp.indicator("fert")
+	migrate <- wpp.indicator("migrate")
 	\dontrun{
-	# Histogram of TFR 
-	print(qplot(value, data=tfr) + facet_wrap(~ Year))}
+	# Histogram of migration rate
+	print(qplot(value, data=migrate) + facet_wrap(~ Year))}
 	\dontrun{
 	mxM01 <- wpp.indicator("mortagesex", sex="M", age="0")
 	# Plot map
-	plot(gvisGeoMap(tfr, locationvar='charcode', numvar='value'))}
+	plot(gvisGeoMap(wpp.by.year(mxM01, 2050), locationvar='charcode', numvar='value'))}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
