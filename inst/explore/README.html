@@ -17,13 +17,15 @@ United Nations, Department of Economic and Social Affairs, Population Division. 
 <p>There is a time and indicator selection on the left, and various forms of visualization on the right.
 The time slider in the left pane defines the year or time period for which data are shown. Note that for vital rate indicators, such as fertility, mortality, migration and sex ratio at birth, the time shown on the slider is the end year of the time period of the data shown in the right pane.
 </p>
-<p>The uncertainty selection is only used for indicators and years for which the corresponding lower and upper bounds are available, and for the appropriate visualization types. These are country plots that appear after clicking on the map, table in the &ldquo;Sortable Data&rdquo; tab, and &ldquo;Trends&rdquo; and &ldquo;Pyramids&rdquo;. In <span class="pkg">wpp2015</span>, the 80 and 95% intervals are available for the fertility, life expectancy and total population indicators; The +-1/2child intervals are available for the fertility and population indicators. 
+<p>The uncertainty selection is only used for indicators and years for which the corresponding lower and upper bounds are available, and for the appropriate visualization types. These are country plots that appear after clicking on the map, table in the &ldquo;Sortable Data&rdquo; tab, and &ldquo;Trends&rdquo; and &ldquo;Pyramids&rdquo;. 
 </p>
-<p>The "Trends, Age Profiles & Pyramids" tab can be used to compare indicators by countries. Selection of multiple countries is supported. The countries are sorted alphabetically. Various aggregated regions can be found at the end of the list. Thus countries can be compared to regional agregates in the same graph. 
+<p>The "Trends & Pyramids" tab can be used to compare indicators by countries. Selection of multiple countries is supported. The countries are sorted alphabetically. Various aggregated regions can be found at the end of the list. Thus countries can be compared to regional agregates in the same graph. 
 </p>
-<p>The ggplot-based graphs in the Trends and Pyramids sub-tabs are interactive. One can see the data values by mouse hovering or single clicks. One can zoom in by selecting a region of the graph. Zooming out is done by a double click.</p>
-<p>Values in the "Trends" plots as well as in the table below correspond to the indicator selected on the left. The values in the "Age Profiles" and "Pyramids" graphs correspond to the sex-  and age-specific version of the selected indicator. For example, if "Total Population" is selected in the left panel, the "Age Profiles" and "Pyramids" graphs show population by sex and age, while the table below shows values of the total population.
+<p>The ggplot-based graphs in the "Trends & Pyramids" sub-tabs are interactive. One can see the data values by mouse hovering or single clicks. One can zoom in by selecting a region of the graph. Zooming out is done by a double click.</p>
+<p>Values in the "Trends" plots as well as in the table below each plot correspond to the indicator selected on the left. The values in the "Age Profiles" and "Pyramids" graphs correspond to the sex-  and age-specific version of the selected indicator. For example, if "Total Population" is selected in the left panel, the "Age Profiles" and "Pyramids" graphs show population by sex and age, while the table below shows values of the total population.
 </p>
+
+<p>The Probability Calculator can be used to compute probability that total population of the selected country will be larger or smaller than the given threshold. Results are shown for future 5-year periods until 2100. In the online version of the Explorer, the calculation is performed using bayesPop trajectories stored on the server. If run locally, a bayesPop simulation directory can be passed to the wpp.explore function as an argument.</p>
 
 <p>The Rosling Chart is based on <a href="https://en.wikipedia.org/wiki/Hans_Rosling" target="_blank">Hans Rosling's</a> <a href="http://www.gapminder.org/world/"  target="_blank">gapminder</a>. After opening the tab, the x and y axes are preloaded with the first three indicators from the left panel. You can add indicators to the axes by selecting it on the left and clicking the "Add Indicator" button in the right panel. Age-specific indicators can also be selected and added to the chart. The chart is created via the R package <span class="pkg">googleVis</span> which for the rendering requires an Internet connection and a Flash player. See the <span class="pkg">googleVis</span> documentation for more details.</p>
 
@@ -35,8 +37,9 @@ The time slider in the left pane defines the year or time period for which data 
 
 
 <h3>References</h3> 
+<p>
 Azose, J.J., &#352;ev&#269;&#237;kov&#225;, H., Raftery, A.E. (2016): <a href="http://www.pnas.org/content/113/23/6460.full">Probabilistic population projections with migration uncertainty</a>.  <i>Proceedings of the National Academy of Sciences</i> 113:6460–6465.
-
+</p>
 <p>P. Gerland, A. E. Raftery, H. &#352;ev&#269;&#237;kov&#225;, N. Li, D. Gu, T. Spoorenberg, L. Alkema, B. K. Fosdick, J. L. Chunn, N. Lalic, G. Bay, T. Buettner, G. K. Heilig,  J. Wilmoth (2014). World Population Stabilization Unlikely This Century. Science 346:234-237.
 </p>
 <p>A. E. Raftery,  N. Li, H. &#352;ev&#269;&#237;kov&#225; , P. Gerland, G. K. Heilig (2012). Bayesian probabilistic population projections for all countries. Proceedings of the National Academy of Sciences 109:13915-13921.

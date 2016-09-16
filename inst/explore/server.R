@@ -63,7 +63,7 @@ shinyServer(function(input, output, session) {
   })
   
   pyramid.data <- reactive({
-  	wppExplorerBayesMig:::get.pyramid.data(input$year, input$seltcountries)
+  	wppExplorerBayesMig:::get.pyramid.data(input$year, input$seltcountries, input$proppyramids)
   })
   
   # pyramid.data.low <- reactive({
@@ -75,11 +75,13 @@ shinyServer(function(input, output, session) {
   # })
   
    pyramid.data.low <- reactive({
-  	wppExplorerBayesMig:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='low')
+  	wppExplorerBayesMig:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$proppyramids, 
+  							input$uncertainty, bound='low')
   })
   
    pyramid.data.high <- reactive({
-  	wppExplorerBayesMig:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$uncertainty, bound='high')
+  	wppExplorerBayesMig:::get.uncertainty.for.pyramid.data(input$year, input$seltcountries, input$proppyramids, 
+  							input$uncertainty, bound='high')
   })
   
   age.profile.mortM <- reactive({
@@ -554,38 +556,38 @@ shinyServer(function(input, output, session) {
   
   .get.pyramid.data <- reactive({
   #.get.pyramid.data <- function(proportion=FALSE) {
-  	proportion <- input$proppyramids
+  	#proportion <- input$proppyramids
   	data <- pyramid.data()
-  	if(proportion) {
-  		tpop <- wppExplorerBayesMig::wpp.indicator('tpop')
-  		data <- .get.prop.data(data, tpop)
-  	}
+  	#if(proportion) {
+  	#	tpop <- wppExplorerBayesMig::wpp.indicator('tpop')
+  	#	data <- .get.prop.data(data, tpop)
+  	#}
 	low <- pyramid.data.low()
   	if(!is.null(low) && nrow(low)>0) {
   		high <- pyramid.data.high()
-  		if(proportion) {
-			#browser()
-			which.pi <- wppExplorerBayesMig:::.get.pi.name(as.integer(input$uncertainty))
-			which.pi <- if('half.child' %in% which.pi) 'half.child' else NULL # currently only half child for pyramid available
-			if(!is.null(which.pi)) {
-				value.name <- "value.3"
-				value.names <- grep("value", colnames(low), value=TRUE)
-				# remove all pi columns other than half.child
-				remove.value.names <- value.names[value.names != value.name]				 
-				low <- low[,-which(colnames(low) %in% remove.value.names)]
-				high <- high[,-which(colnames(high) %in% remove.value.names)]
-  				tpop <- wppExplorerBayesMig::wpp.indicator('tpop.ci', which.pi=which.pi, bound='low')
-  				low <- .get.prop.data(low, tpop, value.col=value.name)
-  				lowval <- low$value
-  				tpop <- wppExplorerBayesMig::wpp.indicator('tpop.ci', which.pi=which.pi, bound='high')
-  				high <- .get.prop.data(high, tpop, value.col=value.name)
-  				low$value <- pmin(low$value, high$value, na.rm=TRUE)
-  				high$value <- pmax(high$value, lowval, na.rm=TRUE)
-  				# restore original pi colum name 
-  				colnames(low) <- sub('value', value.name, colnames(low))
-  				colnames(high) <- sub('value', value.name, colnames(high))
-  			} else low <- NULL
-  		}
+  		# if(proportion) {
+			# #browser()
+			# which.pi <- wppExplorerBayesMig:::.get.pi.name(as.integer(input$uncertainty))
+			# which.pi <- if('half.child' %in% which.pi) 'half.child' else NULL # currently only half child for pyramid available
+			# if(!is.null(which.pi)) {
+				# value.name <- "value.3"
+				# value.names <- grep("value", colnames(low), value=TRUE)
+				# # remove all pi columns other than half.child
+				# remove.value.names <- value.names[value.names != value.name]				 
+				# low <- low[,-which(colnames(low) %in% remove.value.names)]
+				# high <- high[,-which(colnames(high) %in% remove.value.names)]
+  				# tpop <- wppExplorerBayesMig::wpp.indicator('tpop.ci', which.pi=which.pi, bound='low')
+  				# low <- .get.prop.data(low, tpop, value.col=value.name)
+  				# lowval <- low$value
+  				# tpop <- wppExplorerBayesMig::wpp.indicator('tpop.ci', which.pi=which.pi, bound='high')
+  				# high <- .get.prop.data(high, tpop, value.col=value.name)
+  				# low$value <- pmin(low$value, high$value, na.rm=TRUE)
+  				# high$value <- pmax(high$value, lowval, na.rm=TRUE)
+  				# # restore original pi colum name 
+  				# colnames(low) <- sub('value', value.name, colnames(low))
+  				# colnames(high) <- sub('value', value.name, colnames(high))
+  			# } else low <- NULL
+  		# }
   		if(!is.null(low)) {
   			colnames(low) <- sub('value', 'low', colnames(low))
   			colnames(high) <- sub('value', 'high', colnames(high))

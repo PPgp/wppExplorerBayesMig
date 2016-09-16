@@ -45,7 +45,7 @@ set.wpp.year <- function(wpp.year, sim.dir=NULL) {
 	for (item in ls(wpp.data.env)) {
 		if(!(item %in% c('indicators', 'sim.dir'))) rm(list=item, envir=wpp.data.env)
 	}
-	package.suffix <- "plusMig"
+	package.suffix <- "BayesMig"
 	wpp.data.env$package <- paste0('wpp', wpp.year)
 	wpp.data.env$package <- c(paste0('wpp', wpp.year, package.suffix), wpp.data.env$package)
 	data('iso3166', envir=wpp.data.env, package="wppExplorerBayesMig")
@@ -95,7 +95,7 @@ mig <- function(...) {
 		return(sumMFbycountry(wpp.data.env$migrationM, wpp.data.env$migrationF))
 	}
 	pred.dataset <-NULL
-	if(length(wpp.data.env$package)>1) pred.dataset <- 'migproj' #projection stored separately from observations in wpp2015plusMig
+	if(length(wpp.data.env$package)>1) pred.dataset <- 'migproj' #projection stored separately from observations in wpp2015BayesMig
 	load.and.merge.datasets('migration', pred.dataset) # total migration available
 }
 
@@ -273,15 +273,25 @@ popagesex.ci <- function(which.pi, bound, sexm, agem, ...) {
 	sum.by.country.subset.age(data, agem)
 }
 
+.do.popmagesex.ci <- function(dataset, which.pi, bound) {
+	dataset.name <- if(which.pi == 'half.child') paste0(dataset, capitalize(bound))
+					else paste0(dataset, which.pi, .pi.suffix(bound))
+	if.not.exists.load(dataset.name)
+	wpp.data.env[[dataset.name]]
+}
+
 popmagesex.ci <- function(which.pi, bound, sexm, ...) {
 	# retrieve data for multiple ages at the same time (used for pyramids)
 	if((wpp.year.from.package.name(wpp.data.env$package[1]) <= 2010) || (length(sexm) > 1)) 
 		return(NULL)
-	dataset.name <- paste0('pop', sexm, 'proj')
-	dataset.name <- if(which.pi == 'half.child') paste0(dataset.name, capitalize(bound))
-					else paste0(dataset.name, which.pi, .pi.suffix(bound))
-	if.not.exists.load(dataset.name)
-	wpp.data.env[[dataset.name]]
+	.do.popmagesex.ci(paste0('pop', sexm, 'proj'), which.pi, bound)
+}
+
+poppropmagesex.ci <- function(which.pi, bound, sexm, ...) {
+	# retrieve proportional data for multiple ages at the same time (used for pyramids)
+	if((wpp.year.from.package.name(wpp.data.env$package[1]) <= 2010) || (length(sexm) > 1)) 
+		return(NULL)
+	.do.popmagesex.ci(paste0('popProp', sexm, 'proj'), which.pi, bound)
 }
 
 
@@ -536,19 +546,21 @@ dependency.ratio <- function(counts, which='total'){
 	nom/sum(counts[4:13])	
 }
 
-get.uncertainty.for.pyramid.data <- function(year, countries, which.pi=NULL, bound=NULL, indicators=c(F='popF', M='popM'), ...) {
+get.uncertainty.for.pyramid.data <- function(year, countries, proportion=FALSE, which.pi=NULL, bound=NULL, 
+										indicators=if(proportion)c(F='popPropF', M='popPropM') else c(F='popF', M='popM'), ...) {
 	name.preds <- name.obs <- c(NULL, NULL)
 	if(length(which.pi)==0 || wpp.year.from.package.name(wpp.data.env$package[1]) <= 2010) return(NULL)
-	if(! 'popM' %in% unlist(indicators) && ! 'popF' %in% unlist(indicators)) 
-		return(get.pyramid.data(year, countries, which.pi, bound, indicators, ...))
+	#if(proportion) browser()
+	if(!(all(c('popM', 'popF') %in% unlist(indicators)) || all(c('popPropM', 'popPropF') %in% unlist(indicators))))
+		return(get.pyramid.data(year, countries, proportion, which.pi, bound, indicators, ...))
 	# run this only for population CIs
-	fun <- "popmagesex.ci"
+	fun <- if(!proportion) "popmagesex.ci" else "poppropmagesex.ci"
 	all.data <- list(F=NULL, M=NULL)
 	for(i in 1:length(which.pi)) {
 		pi.idx <- as.integer(which.pi[i])
 		pi.name <-.get.pi.name(pi.idx)
 		for(sex in names(indicators)) {
-			lookup.name <- paste(fun, pi.name, sex, bound, sep='.')
+			lookup.name <- paste(fun, pi.name, sex, bound,  sep='.')
 			if(!is.null(wpp.data.env[[lookup.name]])) data <- wpp.data.env[[lookup.name]]
 			else {
 				data <- do.call(fun, list(pi.name, bound=bound, sexm=sex))
@@ -576,10 +588,13 @@ get.uncertainty.for.pyramid.data <- function(year, countries, which.pi=NULL, bou
 	wpp.by.countries(data, countries)
 }
 
-get.pyramid.data <- function(year, countries, which.pi=NULL, bound=NULL, indicators=c(F='popF', M='popM'), load.pred=TRUE) {
+get.pyramid.data <- function(year, countries, proportion=FALSE, which.pi=NULL, bound=NULL, 
+								indicators=if(proportion)c(F='popPropF', M='popPropM') else c(F='popF', M='popM'), 
+								load.pred=TRUE) {
 	name.preds <- name.obs <- c(NULL, NULL)
 	if(is.null(which.pi)) {
 		name.obs <- indicators
+		if(proportion) name.obs <- sapply(name.obs, function(x) sub("Prop", "", x)) # remove "Prop" from the name
 		if(wpp.year.from.package.name(wpp.data.env$package[1]) > 2010 && load.pred) name.preds <- paste(indicators, 'projMed', sep='')
 	} else { #PIs
 		# only +-half.child available
@@ -588,6 +603,7 @@ get.pyramid.data <- function(year, countries, which.pi=NULL, bound=NULL, indicat
 	}
 	if(all(is.null(c(name.preds, name.obs)))) return(NULL)
 	dataB <- list()
+	#if(proportion) browser()
 	for(i in 1:min(2,length(indicators))) {
 		p <- load.and.merge.datasets(name.obs[i], name.preds[i], by=c('country_code', 'age'), remove.cols=c('country', 'name'))
 		dataB[[i]] <- merge.with.un.and.melt(cbind(p, age.num=.get.age.num(p$age)), id.vars=c('charcode', 'age', 'age.num'),

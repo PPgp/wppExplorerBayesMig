@@ -58,7 +58,7 @@ shinyUI(pageWithSidebar(
     			multiple=TRUE, selected=1),
     textOutput('uncertaintyNote'),
     hr(),
-    HTML("<p><small><b>Data Source:</b> Based on estimates for 1950-2015 from <a href='http://esa.un.org/unpd/wpp' target='_blank'>World Population Prospects 2015</a>. Probabilistic projections based on <a href='http://www.pnas.org/content/113/23/6460.full' target='_blank'>Azose et al. (2016, PNAS)</a></small></p><p><small>Hana &#352;ev&#269;&#237;kov&#225;, <a href='https://www.csss.washington.edu' target='_blank'>CSSS</a>, University of Washington; <a href='http://bayespop.csss.washington.edu' target='_blank'>project website</a></small></p>"),
+    HTML("<p><small><b>Data Source:</b> Based on estimates for 1950-2015 from <a href='http://esa.un.org/unpd/wpp' target='_blank'>World Population Prospects 2015</a>. Probabilistic projections based on <a href='http://www.pnas.org/content/113/23/6460.full' target='_blank'>Azose et al. (2016, PNAS)</a></small></p><p><small>&copy; Hana &#352;ev&#269;&#237;kov&#225;, <a href='https://www.csss.washington.edu' target='_blank'>CSSS</a>, University of Washington; <a href='http://bayespop.csss.washington.edu' target='_blank'>project website</a></small></p>"),
 width=3
   ),
   mainPanel(
