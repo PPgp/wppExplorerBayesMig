@@ -2,7 +2,7 @@
 \alias{wpp.explore}
 
 \title{
-Launching WPP Explorer
+Launching Explorer
 }
 \description{
 Main function of the package. It opens an interactive (shiny) interface in a browser. To exit the browser view, hit the Escape key.
@@ -24,6 +24,7 @@ wpp.explore(wpp.year = 2015, host = NULL, sim.dir = NULL, ...)
 	
 	The ggplot-based graphs in the Trends and Pyramids tabs are interactive. One can see the data values by mouse hovering or single clicks. One can zoom in by selecting a region. Zooming out is done by a double click.  
 	
+	For more information see the Help tab of the explorer.
 	%The interface can be accessed online: \url{https://rstudio.stat.washington.edu/shiny/wppExplorer/inst/explore/}
 }
 %\value{
