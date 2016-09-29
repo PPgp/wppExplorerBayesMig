@@ -759,6 +759,8 @@ shinyServer(function(input, output, session) {
   	
   	probability.calc <- function(country, direction, threshold) {
   		pred <- get.pop.prediction(data.env()$sim.dir)
+		if(! country %in% pred$countries$code)
+		     pred <- get.pop.aggregation(data.env()$sim.dir)
   		country.object <- get.country.object(country, country.table=pred$countries)
 		years <- seq(2020, 2100, by=5)
 		probs <- c()

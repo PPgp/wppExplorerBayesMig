@@ -164,7 +164,7 @@ width=3
 				col(0.5, ''),
 				col(3, uiOutput('cselection_single')),
 				col(3, textInput("probcalc_threshold", "Threshold (in thousands):")),
-				col(3, radioButtons("probcalc_direction", label="", choices=list(larger=1, smaller=0), selected = 1, inline = TRUE))				
+				col(3, radioButtons("probcalc_direction", label="", choices=list(larger=1, smaller=0), selected=1, inline=TRUE))
 				),
 			row(
 				col(0.5, ''),
