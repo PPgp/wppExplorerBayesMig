@@ -114,9 +114,8 @@ shinyServer(function(input, output, session) {
   year.range <- reactiveValues(min=1955, max=2100)
     
   output$yearUI <- renderUI({
-  	animationOptions(interval = 3000)
     sliderInput('year', h5('Year:'), sep="",
-    			animate=TRUE,
+    			animate=animationOptions(interval = 1000),
                 min=isolate(year.range$min), max=isolate(year.range$max), value = 2015, step=5)
   })
   
@@ -159,17 +158,27 @@ shinyServer(function(input, output, session) {
     #df <- cbind(df, hover=rep('xxx', nrow(df)))
     country.codes <- get.country.charcodes()
     df <- df[df$charcode %in% country.codes,]
+    has.negatives <- wppExplorerBayesMig:::ind.has.negatives(as.integer(input$indicator))
+    normalize <- input$normalizeMapAndCountryPlot
     options <- NULL
-    if (input$normalizeMapAndCountryPlot) {
-    	inddata <- indicatorData()
-    	inddata <- inddata[inddata$charcode %in% country.codes, 'value']
-    	options <- list( # fixed color scale
-           colorAxis = list(
-             minValue = min(inddata),
-             maxValue = max(inddata)
-           )
-        )
-	}
+    # available projections that can go into options
+    # projection="kavrayskiy-vii" #mercator, albers, lambert and kavrayskiy-vii
+    if (normalize || has.negatives) { # fixed color scale
+    	options <- list(colorAxis = list()) 
+    	if (has.negatives) 
+    		options$colorAxis$colors=c("green", "lightgrey", "red")
+    	if(normalize) {
+    		inddata <- indicatorData()
+    		vranges <- range(inddata[inddata$charcode %in% country.codes, 'value'])
+    	} else vranges <- range(df$value)
+		if (has.negatives) {
+    		maxranges <- max(abs(vranges))
+    		vranges <- c(-maxranges, maxranges)
+    	}
+   		options$colorAxis$minValue <- vranges[1] 
+    	options$colorAxis$maxValue <- vranges[2]
+    }  
+
     list(data = df, options=options)
   })
   
@@ -269,8 +278,9 @@ shinyServer(function(input, output, session) {
   	#browser()
   	options <- list(title=paste(input$year), legend="{ position: 'none' }", colors="['green']", 
   						height="500px", width="900px", histogram=paste0("{bucketSize: ", diff(xlim)/30, "}"))
-  						
-  	options$hAxis <- paste0("{maxAlternation: 1,  minValue:", xlim[1], ", maxValue:", xlim[2], "}")
+  	digits <- wppExplorerBayesMig:::ind.digits(as.integer(input$indicator))				
+  	options$hAxis <- paste0("{maxAlternation: 1,  minValue:", xlim[1], ", maxValue:", xlim[2], 
+  							", ticks: [", paste(round(seq(xlim[1], xlim[2], length=30), digits), collapse=', '), "]}")
   	gvisHistogram(data, options=options)
   })
   
