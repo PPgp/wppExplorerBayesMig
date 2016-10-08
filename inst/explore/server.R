@@ -166,7 +166,7 @@ shinyServer(function(input, output, session) {
     if (normalize || has.negatives) { # fixed color scale
     	options <- list(colorAxis = list()) 
     	if (has.negatives) 
-    		options$colorAxis$colors=c("green", "lightgrey", "red")
+    		options$colorAxis$colors=c("red", "lightgrey", "green")
     	if(normalize) {
     		inddata <- indicatorData()
     		vranges <- range(inddata[inddata$charcode %in% country.codes, 'value'])
