@@ -12,8 +12,8 @@ Explorer of the World Population Prospects with Migration Uncertainty
 \details{
 \tabular{ll}{
 Package: \tab wppExplorerBayesMig\cr
-Version: \tab 0.2-0\cr
-Date: \tab 2016-11-1\cr
+Version: \tab 0.2-1\cr
+Date: \tab 2017-01-06\cr
 Depends: \tab R (>= 3.0.0)\cr
 License: \tab GPL (>= 2)
 }

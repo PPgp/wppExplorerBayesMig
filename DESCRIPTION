@@ -1,6 +1,6 @@
 Package: wppExplorerBayesMig
-Version: 0.2-0
-Date: 2016-11-1
+Version: 0.2-1
+Date: 2017-01-06
 Title: Explorer of World Population Prospects with Probabilistic Migration
 Author: Hana Sevcikova <hanas@uw.edu>
 Maintainer: Hana Sevcikova <hanas@uw.edu>
